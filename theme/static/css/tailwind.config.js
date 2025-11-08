@@ -1,0 +1,1 @@
+module.exports= {content:["./core/templates/**/*.html","./core/templates/*.html","./core/templates/home.html"],theme:{extend:{}},plugins:[]};

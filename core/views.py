@@ -5,4 +5,4 @@ def home(request, codigo_acesso):
         pass
         
     if request.method == 'GET':
-        return render(request, 'home.html', {'codigo_acesso': codigo_acesso})
+        return render(request, 'core/home.html', {'codigo_acesso': codigo_acesso})
