@@ -8,14 +8,15 @@
     {% tailwind_css %}
 </head>
 <body>
-    <div class="flex h-screen w-screen flex-col items-center bg-yellow-green md:flex-row">
-        <div class="w-full flex-auto md:w-3/5 flex flex-col items-center justify-center">
-            <h1 class="pb-3 text-5xl text-gray-green">VINICIUS & REBECA</h1>
-            <h2 class="pb-3 text-5xl text-gray-green">VÃO DIZER SIM!</h2>
-            <h3 class="text-xl text-gray-green">- 22.11.2026 -</h3>
+    <div class="flex h-screen w-screen flex-col bg-yellow-green gap-4 md:flex-row md:gap-0 pb-10">
+        <div class="flex flex-col items-center pt-10 gap-2">
+            <h1 class="text-4xl text-gray-green text-center font-monterchi">VINICIUS<br>&<br>REBECA</h1>
+            <h2 class="text-lg text-gray-green text-center font-monterchi">VÃO DIZER "SIM"!</h2>
+            <h3 class="text-sm text-gray-green text-center font-monterchi">- 22.11.2026 -</h3>
+            <img src="{% static 'images/flores-brancas.png' %}" alt="Flores" class="w-1/2 h-auto mx-auto"/>
         </div>
         <div class="w-full flex-auto md:w-2/5 items-center flex justify-center">
-            <img src="{% static 'images/casal.png' %}" alt="Imagem Casal" class="max-w-sm max-h-sm"/>
+            <img src="{% static 'images/foto-casal.jpg' %}" alt="Imagem Casal" class="w-1/2 h-auto mx-auto rounded-t-full"/>
         </div>
     </div>
 </body>

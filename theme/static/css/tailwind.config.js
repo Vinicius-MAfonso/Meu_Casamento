@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'monterchi': ['Monterchi', 'serif'],
+      },
       colors: {
         "yellow-green": "#bdce8c",
         "gray-green": "#333d23",
