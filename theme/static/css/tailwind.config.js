@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'monterchi': ['Monterchi', 'serif'],
+        'Cinzel': ['Cinzel', 'serif'],
       },
       colors: {
         "yellow-green": "#bdce8c",
