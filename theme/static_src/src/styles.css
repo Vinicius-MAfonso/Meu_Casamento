@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap');
 /**
   * A catch-all path to Django template files, JavaScript, and Python files
   * that contain Tailwind CSS classes and will be scanned by Tailwind to generate the final CSS file.
@@ -8,3 +9,11 @@
   * the scope of this path.
   */
 @source "../../../**/*.{html,py,js}";
+
+@theme {
+  --color-wedding-green: #BDCE8C; 
+  --color-wedding-cream: #FEFAEE;
+  --color-dark-green: #2F3524;
+  --color-dark-brown: #643719;
+  --font-cinzel: "Cinzel", serif;
+}

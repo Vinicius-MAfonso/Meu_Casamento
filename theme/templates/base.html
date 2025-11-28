@@ -1,19 +1,138 @@
 {% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
+  <head>
     <title>Vinicius e Rebeca</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     {% tailwind_css %}
-</head>
+  </head>
 
-<body class="bg-gray-50 text-black font-serif leading-normal tracking-normal">
-<div class="container mx-auto">
-    <section class="flex items-center justify-center h-screen">
-        <h1 class="text-5xl">Django + Tailwind = ❤️</h1>
-    </section>
-</div>
-</body>
+  <body class="leading-normal tracking-normal">
+    <main class="w-screen h-auto">
+      <section class="flex flex-col justify-center bg-wedding-cream h-screen">
+        <div class="flex justify-center pb-8">
+          <img
+            class="object-scale-down w-sm m-auto"
+            src="{% static 'images/foto-casal.png' %}"
+            alt="Foto do Casal"
+          />
+        </div>
+        <div class="mx-auto text-center">
+          <h1 class="text-3xl font-cinzel text-dark-green uppercase">
+            Vinicius & Rebeca
+          </h1>
+          <p class="text-xl font-cinzel text-dark-green">- 22.11.2026 -</p>
+        </div>
+      </section>
+      <section class="h-[80vh]">
+        <div class="flex items-center justify-center h-1/2 bg-wedding-green">
+          <p class="text-xl text-center font-cinzel text-dark-green w-xs">
+            É com imensa alegria que nós, Vinícius e Rebeca, convidamos você
+            para estar ao nosso lado em um dos momentos mais especiais das
+            nossas vidas. Queremos compartilhar a emoção dos nossos votos,
+            celebrados na presença das pessoas que amamos, e você faz
+            parte dessa história.
+          </p>
+        </div>
+        <div
+          class="flex flex-col flex-wrap items-center justify-center h-1/2 bg-dark-green gap-10"
+        >
+          <h2 class="text-2xl text-center font-cinzel text-wedding-cream">
+            Contagem Regressiva
+          </h2>
+          <div class="flex justify-center gap-4 text-center">
+            <div
+              class="w-20 h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center"
+            >
+              <span
+                class="text-2xl font-bold text-dark-green font-cinzel"
+                id="dias"
+                >0</span
+              >
+              <span
+                class="text-xs uppercase tracking-widest text-dark-green font-cinzel"
+                >Dias</span
+              >
+            </div>
+            <div
+              class="w-20 h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center"
+            >
+              <span
+                class="text-2xl font-bold text-dark-green font-cinzel"
+                id="horas"
+                >0</span
+              >
+              <span
+                class="text-xs uppercase tracking-widest text-dark-green font-cinzel"
+                >Horas</span
+              >
+            </div>
+            <div
+              class="w-20 h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center"
+            >
+              <span
+                class="text-2xl font-bold text-dark-green font-cinzel"
+                id="minutos"
+                >0</span
+              >
+              <span
+                class="text-xs uppercase tracking-widest text-dark-green font-cinzel"
+                >Minutos</span
+              >
+            </div>
+            <div
+              class="w-20 h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center"
+            >
+              <span
+                class="text-2xl font-bold text-dark-green font-cinzel"
+                id="segundos"
+                >0</span
+              >
+              <span
+                class="text-xs uppercase tracking-widest text-dark-green font-cinzel"
+                >Segundos</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="bg-wedding-cream h-auto pb-16 pt-16">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div class="flex flex-col items-center">
+                <img 
+                    src="{% static 'images/hora.png' %}" 
+                    class="w-3xs m-auto pb-3"
+                    alt="Detalhe Relógio"
+                >
+              <h3 class="text-dark-brown font-bold font-cinzel text-xl">Quando</h3>
+              <h4 class="text-dark-brown font-cinzel">22/11/2026</h4>
+              <h4 class="text-dark-brown font-cinzel">Recepção: 10:00</h4>
+            </div>
+            <div class="flex flex-col items-center mt-0 md:-mt-12">
+                <img 
+                    src="{% static 'images/lugar.png' %}" 
+                    class="w-3xs m-auto pb-3"
+                    alt="Altar da Cerimônia"
+                >
+              <h3 class="text-dark-brown font-bold font-cinzel text-xl">Onde</h3>
+              <h4 class="text-dark-brown font-cinzel">Recanto Januário - Sumaré/SP</h4>
+              <a  class="text-dark-brown underline font-cinzel" href="#">Vídeo auxiliar para chegar ao local</a>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <img 
+                    src="{% static 'images/vestimenta.png' %}" 
+                    class="w-3xs m-auto pb-3"
+                    alt="Detalhes"
+                >
+              <h3 class="text-dark-brown font-bold font-cinzel text-xl">Traje</h3>
+              <h4 class="text-dark-brown font-cinzel">Formal ou de Coquetel</h4>
+            </div>
+        </div>
+      </section>
+    </main>
+    <script src="{% static 'js/script.js' %}"></script>
+  </body>
 </html>
