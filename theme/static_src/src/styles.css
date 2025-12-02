@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;700&family=Quicksand:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
 /**
   * A catch-all path to Django template files, JavaScript, and Python files
   * that contain Tailwind CSS classes and will be scanned by Tailwind to generate the final CSS file.
@@ -15,5 +15,9 @@
   --color-wedding-cream: #FEFAEE;
   --color-dark-green: #2F3524;
   --color-dark-brown: #643719;
-  --font-cinzel: "Cinzel", serif;
+  --color-light-brown: #AB976D;
+  --font-nunito-sans: 'Nunito Sans', sans-serif;
+  --font-quicksand: 'Quicksand', sans-serif;
+  --font-serif-display: 'Playfair Display', serif;
 }
+

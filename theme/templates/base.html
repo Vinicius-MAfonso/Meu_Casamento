@@ -1,138 +1,412 @@
-{% load static tailwind_tags %}
+{% load static %}
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="scroll-smooth scroll-pt-20">
   <head>
     <title>Vinicius e Rebeca</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    {% tailwind_css %}
+    <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/custom/styles.css' %}" rel="stylesheet" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <link
+      rel="icon"
+      type="image/ico"
+      href="{% static 'images/favicon.ico' %}"
+    />
   </head>
 
-  <body class="leading-normal tracking-normal">
-    <main class="w-screen h-auto">
-      <section class="flex flex-col justify-center bg-wedding-cream h-screen">
-        <div class="flex justify-center pb-8">
+  <body
+    class="leading-normal tracking-normal overflow-x-hidden bg-wedding-cream"
+  >
+    <nav
+      class="fixed w-full z-50 top-0 start-0 bg-wedding-cream/95 backdrop-blur-md shadow-sm border-b border-dark-green/10"
+    >
+      <div
+        class="max-w-6xl mx-auto flex flex-wrap items-center justify-between p-4"
+      >
+        <a
+          href="#inicio"
+          class="flex items-center space-x-3 rtl:space-x-reverse"
+        >
+          <span
+            class="self-center text-2xl font-serif-display font-bold text-dark-green whitespace-nowrap"
+            >V & R</span
+          >
+        </a>
+
+        <button
+          id="nav-toggle"
+          data-collapse-toggle="navbar-default"
+          type="button"
+          class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-dark-green rounded-lg md:hidden hover:bg-wedding-green/20 focus:outline-none focus:ring-2 focus:ring-dark-green/20"
+          aria-controls="navbar-default"
+          aria-expanded="false"
+        >
+          <span class="sr-only">Open main menu</span>
+          <svg
+            class="w-5 h-5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M1 1h15M1 7h15M1 13h15"
+            />
+          </svg>
+        </button>
+
+        <div class="hidden w-full md:block md:w-auto" id="navbar-menu">
+          <ul
+            class="font-quicksand font-medium flex flex-col p-4 md:p-0 mt-4 border border-dark-green/10 rounded-lg bg-wedding-cream md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-transparent"
+          >
+            <li>
+              <a
+                href="#inicio"
+                class="block py-2 px-3 text-dark-green rounded hover:bg-wedding-green/20 md:hover:bg-transparent md:border-0 md:hover:text-light-brown md:p-0 transition-colors"
+                >Início</a
+              >
+            </li>
+            <li>
+              <a
+                href="#sobre"
+                class="block py-2 px-3 text-dark-green rounded hover:bg-wedding-green/20 md:hover:bg-transparent md:border-0 md:hover:text-light-brown md:p-0 transition-colors"
+                >O Casamento</a
+              >
+            </li>
+            <li>
+              <a
+                href="#detalhes"
+                class="block py-2 px-3 text-dark-green rounded hover:bg-wedding-green/20 md:hover:bg-transparent md:border-0 md:hover:text-light-brown md:p-0 transition-colors"
+                >Detalhes</a
+              >
+            </li>
+            <li>
+              <a
+                href="#rsvp-form"
+                class="block py-2 px-3 text-dark-green rounded hover:bg-wedding-green/20 md:hover:bg-transparent md:border-0 md:hover:text-light-brown md:p-0 transition-colors"
+                >RSVP</a
+              >
+            </li>
+            <li>
+              <a
+                href="#lista-presentes"
+                class="block py-2 px-3 text-dark-green rounded hover:bg-wedding-green/20 md:hover:bg-transparent md:border-0 md:hover:text-light-brown md:p-0 transition-colors"
+                >Lista de Presentes</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="w-full h-auto">
+      <section
+        id="inicio"
+        class="flex flex-col justify-center items-center bg-wedding-cream min-h-dvh px-4 py-10"
+      >
+        <div class="flex justify-center pb-8 w-full pt-16 md:pt-0">
           <img
-            class="object-scale-down w-sm m-auto"
-            src="{% static 'images/foto-casal.png' %}"
+            data-aos="zoom-in"
+            data-aos-duration="1500"
+            class="object-cover w-64 h-64 md:w-80 md:h-80 rounded-full shadow-lg border-4 border-wedding-green m-auto"
+            src="{% static 'images/foto-casal.jpg' %}"
             alt="Foto do Casal"
           />
         </div>
-        <div class="mx-auto text-center">
-          <h1 class="text-3xl font-cinzel text-dark-green uppercase">
+        <div class="mx-auto text-center z-10">
+          <h1
+            data-aos="fade-up"
+            data-aos-delay="300"
+            class="text-4xl md:text-6xl font-nunito-sans text-dark-green uppercase font-light tracking-widest mb-2"
+          >
             Vinicius & Rebeca
           </h1>
-          <p class="text-xl font-cinzel text-dark-green">- 22.11.2026 -</p>
+          <h2
+            data-aos="fade-up"
+            data-aos-delay="500"
+            class="text-xl md:text-2xl font-nunito-sans text-dark-green tracking-widest"
+          >
+            - 22.11.2026 -
+          </h2>
         </div>
       </section>
-      <section class="h-[80vh]">
-        <div class="flex items-center justify-center h-1/2 bg-wedding-green">
-          <p class="text-xl text-center font-cinzel text-dark-green w-xs">
+
+      <section id="sobre" class="flex flex-col md:flex-row min-h-screen">
+        <div
+          class="flex items-center justify-center bg-wedding-green p-8 md:p-16 flex-1"
+        >
+          <p
+            data-aos="fade-right"
+            data-aos-duration="1000"
+            class="text-lg md:text-xl text-center font-quicksand text-dark-green max-w-md leading-relaxed"
+          >
             É com imensa alegria que nós, Vinícius e Rebeca, convidamos você
             para estar ao nosso lado em um dos momentos mais especiais das
             nossas vidas. Queremos compartilhar a emoção dos nossos votos,
-            celebrados na presença das pessoas que amamos, e você faz
-            parte dessa história.
+            celebrados na presença das pessoas que amamos, e você faz parte
+            dessa história.
           </p>
         </div>
+
         <div
-          class="flex flex-col flex-wrap items-center justify-center h-1/2 bg-dark-green gap-10"
+          class="flex flex-col items-center justify-center bg-dark-green gap-8 p-8 md:p-16 flex-1"
         >
-          <h2 class="text-2xl text-center font-cinzel text-wedding-cream">
+          <h2
+            data-aos="fade-down"
+            class="text-2xl md:text-3xl text-center font-quicksand text-wedding-cream"
+          >
             Contagem Regressiva
           </h2>
-          <div class="flex justify-center gap-4 text-center">
+          <div class="flex flex-wrap justify-center gap-3 md:gap-4 text-center">
             <div
-              class="w-20 h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center"
+              data-aos="flip-left"
+              data-aos-delay="0"
+              class="w-16 h-16 md:w-20 md:h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center shadow-lg"
             >
               <span
-                class="text-2xl font-bold text-dark-green font-cinzel"
+                class="text-xl md:text-2xl font-bold text-dark-green font-quicksand"
                 id="dias"
                 >0</span
               >
               <span
-                class="text-xs uppercase tracking-widest text-dark-green font-cinzel"
+                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green font-quicksand"
                 >Dias</span
               >
             </div>
             <div
-              class="w-20 h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center"
+              data-aos="flip-left"
+              data-aos-delay="100"
+              class="w-16 h-16 md:w-20 md:h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center shadow-lg"
             >
               <span
-                class="text-2xl font-bold text-dark-green font-cinzel"
+                class="text-xl md:text-2xl font-bold text-dark-green font-quicksand"
                 id="horas"
                 >0</span
               >
               <span
-                class="text-xs uppercase tracking-widest text-dark-green font-cinzel"
+                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green font-quicksand"
                 >Horas</span
               >
             </div>
             <div
-              class="w-20 h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center"
+              data-aos="flip-left"
+              data-aos-delay="200"
+              class="w-16 h-16 md:w-20 md:h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center shadow-lg"
             >
               <span
-                class="text-2xl font-bold text-dark-green font-cinzel"
+                class="text-xl md:text-2xl font-bold text-dark-green font-quicksand"
                 id="minutos"
                 >0</span
               >
               <span
-                class="text-xs uppercase tracking-widest text-dark-green font-cinzel"
-                >Minutos</span
+                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green font-quicksand"
+                >Min</span
               >
             </div>
             <div
-              class="w-20 h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center"
+              data-aos="flip-left"
+              data-aos-delay="300"
+              class="w-16 h-16 md:w-20 md:h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center shadow-lg"
             >
               <span
-                class="text-2xl font-bold text-dark-green font-cinzel"
+                class="text-xl md:text-2xl font-bold text-dark-green font-quicksand"
                 id="segundos"
                 >0</span
               >
               <span
-                class="text-xs uppercase tracking-widest text-dark-green font-cinzel"
-                >Segundos</span
+                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green font-quicksand"
+                >Seg</span
               >
             </div>
           </div>
         </div>
       </section>
-      <section class="bg-wedding-cream h-auto pb-16 pt-16">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div class="flex flex-col items-center">
-                <img 
-                    src="{% static 'images/hora.png' %}" 
-                    class="w-3xs m-auto pb-3"
-                    alt="Detalhe Relógio"
-                >
-              <h3 class="text-dark-brown font-bold font-cinzel text-xl">Quando</h3>
-              <h4 class="text-dark-brown font-cinzel">22/11/2026</h4>
-              <h4 class="text-dark-brown font-cinzel">Recepção: 10:00</h4>
-            </div>
-            <div class="flex flex-col items-center mt-0 md:-mt-12">
-                <img 
-                    src="{% static 'images/lugar.png' %}" 
-                    class="w-3xs m-auto pb-3"
-                    alt="Altar da Cerimônia"
-                >
-              <h3 class="text-dark-brown font-bold font-cinzel text-xl">Onde</h3>
-              <h4 class="text-dark-brown font-cinzel">Recanto Januário - Sumaré/SP</h4>
-              <a  class="text-dark-brown underline font-cinzel" href="#">Vídeo auxiliar para chegar ao local</a>
-            </div>
 
-            <div class="flex flex-col items-center">
-                <img 
-                    src="{% static 'images/vestimenta.png' %}" 
-                    class="w-3xs m-auto pb-3"
-                    alt="Detalhes"
-                >
-              <h3 class="text-dark-brown font-bold font-cinzel text-xl">Traje</h3>
-              <h4 class="text-dark-brown font-cinzel">Formal ou de Coquetel</h4>
-            </div>
+      <section id="detalhes" class="bg-wedding-cream h-auto py-16 px-4">
+        <div
+          class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 mb-16"
+        >
+          <div
+            data-aos="fade-up"
+            data-aos-delay="0"
+            class="flex flex-col items-center text-center"
+          >
+            <img
+              src="{% static 'images/hora.png' %}"
+              class="object-cover w-60 h-60 mb-4 rounded-full"
+              alt="Detalhe Relógio"
+            />
+            <h3 class="text-dark-brown font-bold font-quicksand text-xl mb-2">
+              Quando
+            </h3>
+            <h4 class="text-dark-brown font-quicksand">22/11/2026</h4>
+            <h4 class="text-dark-brown font-quicksand">Recepção: 10:00</h4>
+          </div>
+          <div
+            data-aos="fade-up"
+            data-aos-delay="200"
+            class="flex flex-col items-center text-center"
+          >
+            <img
+              src="{% static 'images/local.png' %}"
+              class="object-cover w-60 h-60 mb-4 rounded-full"
+              alt="Altar da Cerimônia"
+            />
+            <h3 class="text-dark-brown font-bold font-quicksand text-xl mb-2">
+              Onde
+            </h3>
+            <h4 class="text-dark-brown font-quicksand max-w-xs">
+              Recanto Januário - Sumaré/SP
+            </h4>
+            <a
+              class="text-dark-green hover:text-dark-brown underline font-quicksand mt-2 transition-colors"
+              href="https://maps.app.goo.gl/rahBobaqaQLGoMqM9"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Ver no mapa
+            </a>
+            <a
+              class="text-dark-green hover:text-dark-brown underline font-quicksand mt-2 transition-colors"
+              href="https://www.youtube.com/watch?v=VgDgWzBL7s4"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Video auxiliar para chegar ao local
+            </a>
+          </div>
+          <div
+            data-aos="fade-up"
+            data-aos-delay="300"
+            class="flex flex-col items-center text-center"
+          >
+            <img
+              src="{% static 'images/traje.jpg' %}"
+              class="object-cover w-60 h-60 mb-4 rounded-full"
+              alt="Detalhes"
+            />
+            <h3 class="text-dark-brown font-bold font-quicksand text-xl mb-2">
+              Traje
+            </h3>
+            <h4 class="text-dark-brown font-quicksand">
+              Formal ou de Coquetel
+            </h4>
+          </div>
+        </div>
+        <div data-aos="zoom-in" class="flex flex-col items-center mt-8">
+          <p
+            class="text-dark-brown/60 font-quicksand text-xs uppercase tracking-[0.2em] mb-4"
+          >
+            Salvar data
+          </p>
+          <div class="flex items-center gap-8">
+            <a
+              href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Casamento+Vinicius+e+Rebeca&dates=20261122T100000/20261122T180000&details=Celebração+do+nosso+casamento!&location=Recanto+Januário+-+Sumaré/SP&ctz=America/Sao_Paulo"
+              target="_blank"
+              class="flex items-center gap-2 text-dark-green hover:text-light-brown transition-colors duration-300 font-quicksand font-bold group"
+            >
+              <i class="fab fa-google text-lg"></i>
+              <span class="relative"
+                >Google
+                <span
+                  class="absolute left-0 bottom-0 w-0 h-0.5 bg-light-brown transition-all duration-300 group-hover:w-full"
+                ></span>
+              </span>
+            </a>
+            <span class="h-4 w-px bg-dark-green/20"></span>
+            <a
+              href="{% static 'events/wedding.ics' %}"
+              download="save-the-date.ics"
+              class="flex items-center gap-2 text-dark-green hover:text-light-brown transition-colors duration-300 font-quicksand font-bold group"
+            >
+              <i class="fab fa-apple text-lg"></i>
+              <span class="relative"
+                >Apple / Outlook
+                <span
+                  class="absolute left-0 bottom-0 w-0 h-0.5 bg-light-brown transition-all duration-300 group-hover:w-full"
+                ></span>
+              </span>
+            </a>
+          </div>
         </div>
       </section>
+
+      <section
+        id="rsvp-form"
+        class="bg-wedding-green h-auto py-20 px-4 relative overflow-hidden"
+      >
+        {% block content %} {% endblock content %}
+      </section>
+
+      <section
+        id="lista-presentes"
+        class="bg-dark-green h-auto py-24 px-4 relative"
+      >
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+          <div data-aos="fade-down" class="mb-6">
+            <i class="fas fa-gift text-light-brown text-4xl"></i>
+          </div>
+
+          <h2
+            data-aos="fade-up"
+            class="text-3xl md:text-5xl text-wedding-cream font-serif-display mb-8"
+          >
+            Lista de Presentes
+          </h2>
+
+          <p
+            data-aos="fade-up"
+            data-aos-delay="200"
+            class="text-lg md:text-xl font-quicksand text-wedding-cream/80 mb-12 max-w-2xl mx-auto leading-relaxed"
+          >
+            Sua presença em nosso casamento é o único presente que desejamos. No
+            entanto, se desejar nos abençoar com um presente, deixamos aqui
+            algumas opções.
+          </p>
+
+          <div
+            data-aos="zoom-in"
+            data-aos-delay="400"
+            class="flex flex-col sm:flex-row justify-center gap-6"
+          >
+            <a
+              href="#"
+              class="inline-block px-10 py-4 bg-light-brown hover:bg-wedding-cream hover:text-dark-green transition-all duration-300 text-dark-green font-bold font-quicksand rounded shadow-md uppercase tracking-widest text-sm md:text-base border border-light-brown"
+            >
+              Lista Virtual
+            </a>
+            <button
+              onclick="copyPixKey()"
+              class="inline-block px-10 py-4 bg-transparent border border-light-brown text-light-brown hover:bg-light-brown hover:text-dark-green transition-all duration-300 font-bold font-quicksand rounded shadow-md uppercase tracking-widest text-sm md:text-base"
+            >
+              Chave Pix
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <footer
+        class="bg-dark-green py-8 border-t border-wedding-cream/10 text-center"
+      >
+        <p class="text-wedding-cream/40 font-quicksand text-sm">
+          © 2026 Vinicius & Rebeca. Com carinho.
+        </p>
+      </footer>
     </main>
-    <script src="{% static 'js/script.js' %}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+    <script src="{% static 'js/nav_toggle.js' %}"></script>
+    <script src="{% static 'js/countdown.js' %}"></script>
+    <script src="{% static 'js/pix_btn.js' %}"></script>
   </body>
 </html>
