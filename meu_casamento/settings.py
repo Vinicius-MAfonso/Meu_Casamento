@@ -25,7 +25,6 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 
 if DATABASE_URL.startswith("sqlite"):
-    # Example: sqlite:///db.sqlite3
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -33,12 +32,10 @@ if DATABASE_URL.startswith("sqlite"):
         }
     }
 elif DATABASE_URL != "":
-    # PostgreSQL, MySQL, etc.
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600),
     }
 else:
-    # Fallback for development without env var
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -79,7 +76,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Whitenoise for Render (production)
 if not DEBUG:
     MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
