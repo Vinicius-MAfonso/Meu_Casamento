@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -17,24 +18,38 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 # Allowed hosts
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
-# Database
-DATABASE_URL = os.getenv("DATABASE_URL")
+# -------------------------
+# Database configuration
+# -------------------------
+
+DATABASE_URL = os.getenv("DATABASE_URL", "")
 
 if DATABASE_URL.startswith("sqlite"):
+    # Example: sqlite:///db.sqlite3
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': DATABASE_URL.split(":///")[1],
         }
     }
-else:
-    # PostgreSQL or others using dj-database-url
-    import dj_database_url
+elif DATABASE_URL != "":
+    # PostgreSQL, MySQL, etc.
     DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600),
+    }
+else:
+    # Fallback for development without env var
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
 
-# App settings
+# -------------------------
+# Apps
+# -------------------------
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,6 +65,10 @@ INSTALLED_APPS = [
 if DEBUG:
     INSTALLED_APPS += ["django_browser_reload"]
 
+# -------------------------
+# Middleware
+# -------------------------
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -60,8 +79,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Whitenoise for Render (production)
+if not DEBUG:
+    MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 if DEBUG:
     MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
+
+# -------------------------
+# Templates
+# -------------------------
 
 ROOT_URLCONF = 'meu_casamento.urls'
 
@@ -82,18 +110,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'meu_casamento.wsgi.application'
 
-# Internationalization
+# -------------------------
+# i18n
+# -------------------------
+
 LANGUAGE_CODE = 'pt-br'
 TIMEZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
+# -------------------------
 # Static files
+# -------------------------
+
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "theme" / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Tailwind
 TAILWIND_APP_NAME = 'theme'
+
 INTERNAL_IPS = ["127.0.0.1"]
