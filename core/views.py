@@ -5,16 +5,17 @@ def home(request, codigo_acesso):
     if request.method == 'POST':
         grupo = Grupo.objects.filter(codigo_acesso=codigo_acesso).first()
         convidados_do_grupo = Convidado.objects.filter(grupo__codigo_acesso=codigo_acesso)
-        confirmações = request.POST.getlist('confirmacao')
+        ids_confirmados = request.POST.getlist('confirmacao')
         for convidado in convidados_do_grupo:
-            if str(convidado.id) in confirmações:
-                convidado.status_confirmacao = True
+            if str(convidado.id) in ids_confirmados:
+                convidado.status_confirmacao = 'confirmado'
             else:
-                convidado.status_confirmacao = False
+                convidado.status_confirmacao = 'pendente' # Or 'recusado' if you prefer
             convidado.save()
+            
         grupo.status_confirmacao = True
         grupo.save()
-        return redirect(f'/{codigo_acesso}/#rsvp-form')
+        return redirect(f'/{codigo_acesso}/#rsvp-section')
         
     if request.method == 'GET':
         grupo = Grupo.objects.filter(codigo_acesso=codigo_acesso).first()

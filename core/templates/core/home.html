@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+{% load static %}
+{% block content %}
 
 {% if request.grupo.status_confirmacao %}
  <div
@@ -47,6 +49,7 @@
   <form
     data-aos="zoom-in-up"
     method="POST"
+    id="rsvp-form"
     class="w-full max-w-lg mx-auto bg-wedding-cream/10 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-sm border border-dark-green/10"
   >
     {% csrf_token %}
@@ -72,10 +75,11 @@
           <label
             class="cursor-pointer relative flex items-center justify-center w-8 h-8"
           >
-            <input
+          <input
               type="checkbox"
               id="guest_{{ forloop.counter }}"
-              name="confirm_{{ forloop.counter }}"
+              name="confirmacao" 
+              value="{{ convidado.id }}"
               class="checkbox-circle peer sr-only"
             />
             <div
@@ -109,5 +113,6 @@
     </div>
   </form>
 </div>
+<script src="{% static 'js/block_null_forms.js' %}"></script>
 {% endif %}
 {% endblock content %}
