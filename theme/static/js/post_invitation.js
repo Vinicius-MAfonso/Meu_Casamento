@@ -1,5 +1,13 @@
 document.getElementById("rsvp-form").addEventListener("submit", function (event) {
   event.preventDefault();
+  
+  const checkedBoxes = document.querySelectorAll(
+    'input[name="confirmacao"]:checked'
+  );
+
+  if (checkedBoxes.length === 0) {
+    return alert("Por favor, selecione pelo menos um convidado para confirmar presença.");
+  }
 
   const formData = new FormData(this);
   const confirmacao = formData.getAll("confirmacao");
@@ -18,6 +26,11 @@ document.getElementById("rsvp-form").addEventListener("submit", function (event)
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
         document.getElementById("form-container").classList.add("hidden");
         document.getElementById("success-container").classList.remove("hidden");
         
