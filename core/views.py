@@ -1,7 +1,7 @@
 import json
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 from .models import Convidado, Grupo
 
 
@@ -37,3 +37,8 @@ def api_confirmar_presenca(request, codigo_acesso):
 
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)}, status=400)
+
+
+@require_GET
+def api_status_projeto(request):
+    return JsonResponse({"status": "ok"}, status=200)

@@ -8,4 +8,5 @@ urlpatterns = [
     path(
         "api/confirmar/<uuid:codigo_acesso>/", views.api_confirmar_presenca, name="api_confirmar"
     ),
+    path("api/status/", views.api_status_projeto, name="api_status"),
 ]
