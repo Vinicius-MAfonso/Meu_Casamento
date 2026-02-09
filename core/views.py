@@ -1,28 +1,39 @@
-from django.shortcuts import render, redirect
+import json
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from .models import Convidado, Grupo
 
+
 def home(request, codigo_acesso):
-    if request.method == 'POST':
-        grupo = Grupo.objects.filter(codigo_acesso=codigo_acesso).first()
-        convidados_do_grupo = Convidado.objects.filter(grupo__codigo_acesso=codigo_acesso)
-        ids_confirmados = request.POST.getlist('confirmacao')
-        for convidado in convidados_do_grupo:
+    grupo = get_object_or_404(Grupo, codigo_acesso=codigo_acesso)
+    convidados = Convidado.objects.filter(grupo=grupo)
+
+    return render(request, "core/home.html", {"grupo": grupo, "convidados": convidados})
+
+
+@require_POST
+def api_confirmar_presenca(request, codigo_acesso):
+    try:
+        data = json.loads(request.body)
+        ids_confirmados = data.get("confirmacao", [])
+
+        grupo = get_object_or_404(Grupo, codigo_acesso=codigo_acesso)
+        convidados = Convidado.objects.filter(grupo=grupo)
+
+        for convidado in convidados:
             if str(convidado.id) in ids_confirmados:
-                convidado.status_confirmacao = 'confirmado'
+                convidado.status_confirmacao = "confirmado"
             else:
-                convidado.status_confirmacao = 'pendente' # Or 'recusado' if you prefer
+                convidado.status_confirmacao = "pendente"
             convidado.save()
-            
+
         grupo.status_confirmacao = True
         grupo.save()
-        return redirect(f'/{codigo_acesso}/#rsvp-section')
-        
-    if request.method == 'GET':
-        grupo = Grupo.objects.filter(codigo_acesso=codigo_acesso).first()
-        request.grupo = grupo
-        if grupo.status_confirmacao:
-            return render(request, 'core/home.html', {'request': request})
-        elif grupo.status_confirmacao is False:
-            convidados_do_grupo = Convidado.objects.filter(grupo__codigo_acesso=codigo_acesso)
-            request.convidados = convidados_do_grupo
-            return render(request, 'core/home.html', {'request': request})
+
+        return JsonResponse(
+            {"success": True, "message": "Presença confirmada com sucesso!"}
+        )
+
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)}, status=400)

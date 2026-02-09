@@ -1,4 +1,3 @@
-// Countdown
 const weddingTime = new Date(2026, 10, 22, 10, 0, 0).getTime();
 const elDias = document.getElementById("dias");
 const elHoras = document.getElementById("horas");
