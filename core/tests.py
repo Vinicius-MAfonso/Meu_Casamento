@@ -65,3 +65,14 @@ class APIConfirmarPresencaTest(TestCase):
     def test_confirmar_presenca_invalid_code(self):
         response = self.client.post('/api/confirmar/invalid-code/', {}, content_type='application/json')
         self.assertEqual(response.status_code, 404)
+
+    def test_confirmar_presenca_already_confirmed(self):
+        # First, confirm
+        url = reverse('core:api_confirmar', args=[self.grupo.codigo_acesso])
+        data = {'confirmacao': [str(self.convidado1.id)]}
+        self.client.post(url, data, content_type='application/json')
+        
+        # Try to confirm again
+        response = self.client.post(url, data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("já foi confirmada", response.json()['error'])

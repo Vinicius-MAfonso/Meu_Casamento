@@ -401,15 +401,115 @@
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+      /* Wedding-themed Toastr styling */
+      .toast-container {
+        font-family: 'Quicksand', sans-serif;
+      }
+
+      .toast {
+        background-color: #1a4d3e;
+        color: #fef6f0;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(26, 77, 62, 0.3);
+        border-left: 4px solid #4a9d89;
+        padding: 1rem;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .toast.success {
+        background-color: #166534;
+        border-left-color: #22c55e;
+        color: #f0fdf4;
+      }
+
+      .toast.error {
+        background-color: #7f1d1d;
+        border-left-color: #ef4444;
+        color: #fef2f2;
+      }
+
+      .toast.warning {
+        background-color: #713f12;
+        border-left-color: #eab308;
+        color: #fffbeb;
+      }
+
+      .toast.info {
+        background-color: #1e3a8a;
+        border-left-color: #3b82f6;
+        color: #eff6ff;
+      }
+
+      .toast-message {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 500;
+      }
+
+      .toast-close-button {
+        color: inherit;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+      }
+
+      .toast-close-button:hover {
+        opacity: 1;
+      }
+
+      .toast-progress {
+        background: linear-gradient(to right, #4a9d89, #6ab09f);
+        height: 3px;
+      }
+
+      .toast.success .toast-progress {
+        background: linear-gradient(to right, #22c55e, #4ade80);
+      }
+
+      .toast.error .toast-progress {
+        background: linear-gradient(to right, #dc2626, #ef4444);
+      }
+
+      .toast.warning .toast-progress {
+        background: linear-gradient(to right, #d97706, #f59e0b);
+      }
+
+      .toast.info .toast-progress {
+        background: linear-gradient(to right, #2563eb, #3b82f6);
+      }
+    </style>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
       AOS.init();
+      // Configure Toastr
+      toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      };
     </script>
     <script>
       window.WEDDING_DATE = "{{ WEDDING_DATE }}";
     </script>
+    <script src="{% static 'js/toast.js' %}"></script>
     <script src="{% static 'js/nav_toggle.js' %}"></script>
     <script src="{% static 'js/countdown.js' %}"></script>
     <script src="{% static 'js/pix_btn.js' %}"></script>
+    <script src="{% static 'js/post_invitation.js' %}"></script>
   </body>
 </html>
