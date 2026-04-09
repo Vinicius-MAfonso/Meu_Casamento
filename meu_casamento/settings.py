@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import dj_database_url
+import sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,6 +42,13 @@ else:
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
+    }
+
+# Use SQLite for tests to avoid remote DB issues
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
     }
 
 # -------------------------
@@ -99,6 +107,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'meu_casamento.context_processors.wedding_settings',
             ],
         },
     },
@@ -114,6 +123,12 @@ LANGUAGE_CODE = 'pt-br'
 TIMEZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
+
+# -------------------------
+# Wedding configuration
+# -------------------------
+
+WEDDING_DATE = '2026-11-22T10:00:00'
 
 # -------------------------
 # Static files

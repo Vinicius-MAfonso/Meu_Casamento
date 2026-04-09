@@ -1,6 +1,11 @@
 from django.contrib import admin
 from .models import Grupo, Convidado
 
+# Configure admin site
+admin.site.site_header = "Administração do Casamento"
+admin.site.site_title = "Admin do Casamento"
+admin.site.index_title = "Bem-vindo ao Admin do Casamento"
+
 class ConvidadoInline(admin.TabularInline):
     model = Convidado
     extra = 1  
@@ -32,12 +37,10 @@ class ConvidadoAdmin(admin.ModelAdmin):
     list_display = (
         'nome', 
         'grupo', 
-        'is_representante', 
         'status_confirmacao'
     )
     list_filter = (
         'status_confirmacao', 
-        'is_representante', 
         'grupo'
     )
     search_fields = ('nome', 'grupo__nome')

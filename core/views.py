@@ -1,8 +1,11 @@
 import json
+import logging
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST, require_safe
 from .models import Convidado, Grupo
+
+logger = logging.getLogger(__name__)
 
 
 def home(request, codigo_acesso):
@@ -36,7 +39,8 @@ def api_confirmar_presenca(request, codigo_acesso):
         )
 
     except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)}, status=400)
+        logger.error(f"Error confirming presence for group {codigo_acesso}: {str(e)}")
+        return JsonResponse({"success": False, "error": "Erro interno do servidor"}, status=500)
 
 @require_safe
 def api_status_projeto(request):

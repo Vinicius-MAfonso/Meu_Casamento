@@ -22,7 +22,6 @@ class Convidado(models.Model):
         Grupo, on_delete=models.CASCADE, related_name="convidados"
     )
     nome = models.CharField(max_length=100, verbose_name="Nome Completo")
-    is_representante = models.BooleanField(verbose_name="É líder/representante?")
     status_confirmacao = models.CharField(
         max_length=50,
         verbose_name="Status de presença",
