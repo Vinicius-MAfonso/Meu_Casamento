@@ -6,17 +6,13 @@ import sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load .env file
 env_file = BASE_DIR / ('.env.local' if os.getenv("DJANGO_ENV") != "production" else '.env.prod')
 load_dotenv(env_file)
 
-# Secret key
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# Debug mode
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# Allowed hosts
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # -------------------------
@@ -178,7 +174,6 @@ INTERNAL_IPS = ["127.0.0.1"]
 # Logging configuration
 # -------------------------
 
-# Ensure logs directory exists before configuring logging
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)
 

@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Grupo, Convidado
 
-# Configure admin site
 admin.site.site_header = "Administração do Casamento"
 admin.site.site_title = "Admin do Casamento"
 admin.site.index_title = "Bem-vindo ao Admin do Casamento"
