@@ -1,9 +1,7 @@
-// Ensure event listener is only attached once
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById("rsvp-form");
   if (!form) return;
   
-  // Prevent multiple listener attachments
   if (form.dataset.listenerAttached) return;
   form.dataset.listenerAttached = 'true';
   
