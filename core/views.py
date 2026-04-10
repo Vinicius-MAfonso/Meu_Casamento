@@ -19,7 +19,12 @@ def home(request, codigo_acesso):
 
 
 def rate_limit_ip(request, max_requests=5, window=60):
-    ip = request.META.get("REMOTE_ADDR")
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR', 'unknown')
+    
     cache_key = f"ratelimit_{ip}"
     requests = cache.get(cache_key, [])
     now = time.time()
@@ -43,7 +48,14 @@ def api_confirmar_presenca(request, codigo_acesso):
                 status=429,
             )
 
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            logger.warning(f"Invalid JSON received for group {codigo_acesso}")
+            return JsonResponse(
+                {"success": False, "error": "Formato de dados inválido"}, status=400
+            )
+        
         ids_confirmados = data.get("confirmacao", [])
 
         grupo = get_object_or_404(Grupo, codigo_acesso=codigo_acesso)
