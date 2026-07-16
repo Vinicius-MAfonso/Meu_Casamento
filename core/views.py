@@ -19,12 +19,7 @@ def home(request, codigo_acesso):
 
 
 def rate_limit_ip(request, max_requests=5, window=60):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0].strip()
-    else:
-        ip = request.META.get('REMOTE_ADDR', 'unknown')
-    
+    ip = request.META.get('REMOTE_ADDR', 'unknown')
     cache_key = f"ratelimit_{ip}"
     requests = cache.get(cache_key, [])
     now = time.time()
@@ -32,6 +27,7 @@ def rate_limit_ip(request, max_requests=5, window=60):
     requests = [req_time for req_time in requests if now - req_time < window]
 
     if len(requests) >= max_requests:
+        logger.warning(f"Rate limit exceeded for IP {ip}")
         return False
 
     requests.append(now)

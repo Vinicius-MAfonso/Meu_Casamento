@@ -74,3 +74,21 @@ class APIConfirmarPresencaTest(TestCase):
         response = self.client.post(url, data, content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertIn("já foi confirmada", response.json()['error'])
+
+    def test_rate_limit_uses_remote_addr_only(self):
+        from django.test import RequestFactory
+        from .views import rate_limit_ip
+
+        cache.clear()
+        factory = RequestFactory()
+        request = factory.post(
+            reverse('core:api_confirmar', args=[self.grupo.codigo_acesso]),
+            content_type='application/json',
+            REMOTE_ADDR='1.2.3.4',
+            HTTP_X_FORWARDED_FOR='8.8.8.8',
+        )
+
+        for _ in range(5):
+            self.assertTrue(rate_limit_ip(request, max_requests=5, window=60))
+
+        self.assertFalse(rate_limit_ip(request, max_requests=5, window=60))
