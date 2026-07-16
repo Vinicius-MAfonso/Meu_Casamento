@@ -22,7 +22,7 @@ class ConvidadoModelTest(TestCase):
         )
         self.assertEqual(convidado.nome, "João Silva")
         self.assertEqual(convidado.grupo, self.grupo)
-        self.assertEqual(convidado.status_confirmacao, "pendente")
+        self.assertEqual(convidado.status_confirmacao, False)
 
 
 class HomeViewTest(TestCase):
@@ -57,8 +57,8 @@ class APIConfirmarPresencaTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.convidado1.refresh_from_db()
         self.convidado2.refresh_from_db()
-        self.assertEqual(self.convidado1.status_confirmacao, 'confirmado')
-        self.assertEqual(self.convidado2.status_confirmacao, 'pendente')
+        self.assertEqual(self.convidado1.status_confirmacao, True)
+        self.assertEqual(self.convidado2.status_confirmacao, False)
         self.grupo.refresh_from_db()
         self.assertTrue(self.grupo.status_confirmacao)
 

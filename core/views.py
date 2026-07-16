@@ -67,9 +67,9 @@ def api_confirmar_presenca(request, codigo_acesso):
 
         for convidado in convidados:
             if str(convidado.id) in ids_confirmados:
-                convidado.status_confirmacao = "confirmado"
+                convidado.status_confirmacao = True
             else:
-                convidado.status_confirmacao = "pendente"
+                convidado.status_confirmacao = False
             convidado.save()
 
         grupo.status_confirmacao = True

@@ -86,7 +86,7 @@
               name="confirmacao" 
               value="{{ convidado.id }}"
               class="checkbox-circle peer sr-only"
-              {% if convidado.status_confirmacao == 'confirmado' %}checked{% endif %}
+              {% if convidado.status_confirmacao %}checked{% endif %}
             />
             <div
               class="w-6 h-6 rounded-full border-2 border-dark-green transition-all duration-200"
