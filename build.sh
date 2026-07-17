@@ -1,11 +1,11 @@
+#!/usr/bin/env bash
 set -o errexit
 
 pip install -r requirements.txt
 
-mkdir -p logs
+python manage.py tailwind install --no-input
+python manage.py tailwind build --no-input
 
-tailwindcss -i theme/static_src/src/styles.css -o theme/static/css/dist/styles.css --minify
-
-python manage.py collectstatic --noinput
+python manage.py collectstatic --no-input
 
 python manage.py migrate
