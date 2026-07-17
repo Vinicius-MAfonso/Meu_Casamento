@@ -2,11 +2,11 @@ BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Casamento//Wedding Event//pt-BR
 BEGIN:VEVENT
-UID:wedding-vinicius-rebeca
+UID:wedding-rebeca-vinicius
 DTSTAMP:20240201T120000Z
 DTSTART:20261122T130000Z
 DTEND:20261122T170000Z
-SUMMARY:Casamento Vinicius e Rebeca
+SUMMARY:Casamento Rebeca e Vinicius
 DESCRIPTION:Celebração do nosso casamento!
 LOCATION:Recanto Januário - Sumaré/SP
 END:VEVENT
