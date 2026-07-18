@@ -13,7 +13,11 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()]
+
+RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # -------------------------
 # Database configuration
@@ -41,7 +45,8 @@ else:
     }
 
 # Use SQLite for tests to avoid remote DB issues
-if 'test' in sys.argv:
+RUNNING_TESTS = 'test' in sys.argv
+if RUNNING_TESTS:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': ':memory:',
@@ -58,6 +63,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'csp',
     'tailwind',
     'theme',
     'core'
@@ -82,10 +88,22 @@ MIDDLEWARE = [
 
 if not DEBUG:
     MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    # CSPMiddleware must come after SecurityMiddleware/WhiteNoiseMiddleware
+    MIDDLEWARE.insert(2, "csp.middleware.CSPMiddleware")
 
 if DEBUG:
     MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
+
+# django.contrib.staticfiles.storage.StaticFilesStorage is uncompressed/unversioned,
+# used only so local dev doesn't require a collectstatic run before every page load.
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        if not DEBUG and not RUNNING_TESTS
+        else "django.contrib.staticfiles.storage.StaticFilesStorage"
+    },
+}
 
 # -------------------------
 # Templates
@@ -126,15 +144,30 @@ CACHES = {
 # Security settings
 # -------------------------
 
-if not DEBUG:
+if not DEBUG and not RUNNING_TESTS:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_SECURITY_POLICY = {
-        'default-src': ("'self'",),
-        'script-src': ("'self'", "'unsafe-inline'"),
-        'style-src': ("'self'", "'unsafe-inline'"),
+    # NOTE: 'unsafe-inline' is required because base.html has inline <script>/<style>
+    # blocks (toastr config, AOS.init(), the WEDDING_DATE bootstrap). Moving those to
+    # static files would let this be tightened to a nonce-based policy without
+    # 'unsafe-inline'.
+    CONTENT_SECURITY_POLICY = {
+        "DIRECTIVES": {
+            "default-src": ["'self'"],
+            "script-src": [
+                "'self'", "'unsafe-inline'",
+                "cdnjs.cloudflare.com", "unpkg.com", "cdn.jsdelivr.net",
+            ],
+            "style-src": [
+                "'self'", "'unsafe-inline'",
+                "cdnjs.cloudflare.com", "unpkg.com", "fonts.googleapis.com",
+            ],
+            "font-src": ["'self'", "fonts.gstatic.com", "cdnjs.cloudflare.com"],
+            "img-src": ["'self'", "data:"],
+            "connect-src": ["'self'"],
+        }
     }
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -145,7 +178,7 @@ if not DEBUG:
 # -------------------------
 
 LANGUAGE_CODE = 'pt-br'
-TIMEZONE = 'America/Sao_Paulo'
+TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
@@ -160,7 +193,6 @@ WEDDING_DATE = '2026-11-22T10:00:00'
 # -------------------------
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "theme" / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -173,9 +205,6 @@ INTERNAL_IPS = ["127.0.0.1"]
 # -------------------------
 # Logging configuration
 # -------------------------
-
-LOGS_DIR = BASE_DIR / 'logs'
-LOGS_DIR.mkdir(exist_ok=True)
 
 LOGGING = {
     'version': 1,
@@ -204,26 +233,36 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': str(LOGS_DIR / 'django.log'),
-            'maxBytes': 1024 * 1024 * 15,
-            'backupCount': 10,
-            'formatter': 'verbose',
-        },
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'] if not DEBUG else ['console'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
         'core': {
-            'handlers': ['console', 'file'] if not DEBUG else ['console'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
     },
 }
+
+# Optional local file logging for local development only. Most hosts (Render,
+# Heroku, etc.) have ephemeral/read-only filesystems in production, so writing
+# log files there is unreliable at best -- log to stdout and let the platform's
+# log aggregation handle it instead. Set LOG_TO_FILE=true locally to opt in.
+if DEBUG and os.getenv("LOG_TO_FILE", "false").lower() == "true":
+    LOGS_DIR = BASE_DIR / 'logs'
+    LOGS_DIR.mkdir(exist_ok=True)
+    LOGGING['handlers']['file'] = {
+        'level': 'INFO',
+        'class': 'logging.handlers.RotatingFileHandler',
+        'filename': str(LOGS_DIR / 'django.log'),
+        'maxBytes': 1024 * 1024 * 15,
+        'backupCount': 10,
+        'formatter': 'verbose',
+    }
+    LOGGING['loggers']['django']['handlers'].append('file')
+    LOGGING['loggers']['core']['handlers'].append('file')
 

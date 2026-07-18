@@ -4,6 +4,7 @@ const elHoras = document.getElementById("horas");
 const elMinutos = document.getElementById("minutos");
 const elSegundos = document.getElementById("segundos");
 const pad = (value, length = 2) => String(value).padStart(length, "0");
+let countdownInterval;
 
 function updateCountdown() {
   const now = Date.now();
@@ -32,4 +33,4 @@ function updateCountdown() {
 }
 
 updateCountdown();
-const countdownInterval = setInterval(updateCountdown, 1000);
+countdownInterval = setInterval(updateCountdown, 1000);

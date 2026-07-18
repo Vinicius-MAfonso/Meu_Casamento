@@ -40,15 +40,18 @@ A beautiful Django-based wedding RSVP system with guest management, confirmation
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    ```
 
-3. Install dependencies:
+3. Install dependencies (includes dev-only tooling like django-browser-reload;
+   production installs use `requirements.txt` alone -- see `build.sh`):
    ```bash
-   pip install -r requirements.txt
+   pip install -r requirements-dev.txt
    ```
 
 4. Set up environment variables:
    ```bash
    cp .env.local.example .env.local  # Create from template
-   # Edit .env.local with your settings
+   # Edit .env.local with your settings -- at minimum set SECRET_KEY.
+   # ALLOWED_HOSTS must include localhost,127.0.0.1 or `runserver` will
+   # reject every request with DisallowedHost.
    ```
 
 5. Run migrations:
@@ -79,12 +82,32 @@ A beautiful Django-based wedding RSVP system with guest management, confirmation
    python manage.py tailwind start
    ```
 
-### Production Deployment
+### Production Deployment (Render)
 
-1. Set `DJANGO_ENV=production` in environment
-2. Use `.env.prod` for production settings
-3. Run `python manage.py collectstatic`
-4. Deploy with Gunicorn/WhiteNoise
+1. In the Render Dashboard, create a **Web Service** from this repo:
+   - **Build Command:** `./build.sh`
+   - **Start Command:** `gunicorn meu_casamento.wsgi:application`
+2. Set environment variables (Settings → Environment): `DJANGO_ENV=production`,
+   `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS` (your custom domain, if any --
+   Render's own `xxx.onrender.com` hostname is added automatically via the
+   `RENDER_EXTERNAL_HOSTNAME` variable Render injects for you), and
+   `DATABASE_URL` (use the **Internal Database URL** from your Render Postgres
+   instance if the DB is in the same region -- it's faster and doesn't require
+   SSL; use the External URL only if connecting from outside Render).
+   `.env.prod.example` lists these for reference.
+3. `build.sh` installs dependencies, builds Tailwind CSS, runs `collectstatic`,
+   and runs `migrate` -- all as part of the build step, since Render's
+   Pre-Deploy Command (the equivalent of Heroku's release phase, for running
+   migrations separately after build/before traffic cutover) is only
+   available on paid instance types. If you're on a paid plan and want
+   migrations to run in that separate step instead, move the `python
+   manage.py migrate` line out of `build.sh` and into the Pre-Deploy Command
+   field under your service's Settings → Advanced.
+
+`Procfile.tailwind` is for **local development only** (runs `runserver` and
+the Tailwind watcher together via `honcho`/`foreman`) -- Render doesn't read
+Procfiles at all, it uses the Build/Start Command fields above, so never
+point production traffic at `manage.py runserver`.
 
 ## Usage
 

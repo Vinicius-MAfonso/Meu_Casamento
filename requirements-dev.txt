@@ -1,0 +1,5 @@
+-r requirements.txt
+
+# Dev-only: auto-reloads the browser on template/static changes.
+# Only wired up in settings.py when DEBUG=True.
+django-browser-reload==1.21.0

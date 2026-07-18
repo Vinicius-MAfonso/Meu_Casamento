@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def home(request, codigo_acesso):
     grupo = get_object_or_404(Grupo, codigo_acesso=codigo_acesso)
-    convidados = Convidado.objects.filter(grupo=grupo)
+    convidados = grupo.convidados.order_by("nome")
 
     return render(request, "core/home.html", {"grupo": grupo, "convidados": convidados})
 
