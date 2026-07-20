@@ -1,6 +1,10 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.core.cache import cache
+from django.utils import timezone
+from datetime import timedelta
+import json
+import re
 from .models import Grupo, Convidado
 
 
@@ -93,3 +97,74 @@ class APIConfirmarPresencaTest(TestCase):
             self.assertTrue(rate_limit_ip(request, max_requests=5, window=60))
 
         self.assertFalse(rate_limit_ip(request, max_requests=5, window=60))
+
+
+def _wedding_date_in(days):
+    """A WEDDING_DATE string `days` from now, formatted the same way settings.py uses."""
+    return timezone.localtime(timezone.now() + timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%S")
+
+
+def _is_container_hidden(html, container_id):
+    """Whether the container with this id has Tailwind's `hidden` class. Content is
+    always present in the DOM either way, so this checks the class list directly
+    rather than checking whether text appears in the response."""
+    match = re.search(
+        r'id="%s"\s*\n?\s*class="([^"]*)"' % re.escape(container_id), html
+    )
+    assert match, f"container #{container_id} not found in response"
+    return "hidden" in match.group(1).split()
+
+
+class RsvpDeadlineTest(TestCase):
+    def setUp(self):
+        self.grupo = Grupo.objects.create(nome="Família Silva")
+        self.convidado = Convidado.objects.create(nome="João Silva", grupo=self.grupo)
+
+    @override_settings(WEDDING_DATE=_wedding_date_in(10))
+    def test_rsvp_page_shows_closed_state_within_deadline_window(self):
+        # Wedding in 10 days, RSVP_CLOSE_DAYS_BEFORE=30 -> deadline already passed.
+        url = reverse('core:home', args=[self.grupo.codigo_acesso])
+        response = self.client.get(url)
+        html = response.content.decode()
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['rsvp_closed'])
+        self.assertFalse(_is_container_hidden(html, "closed-container"))
+        self.assertTrue(_is_container_hidden(html, "form-container"))
+
+    @override_settings(WEDDING_DATE=_wedding_date_in(60))
+    def test_rsvp_page_still_open_outside_deadline_window(self):
+        # Wedding in 60 days -> deadline (30 days before) hasn't arrived yet.
+        url = reverse('core:home', args=[self.grupo.codigo_acesso])
+        response = self.client.get(url)
+        html = response.content.decode()
+        self.assertFalse(response.context['rsvp_closed'])
+        self.assertTrue(_is_container_hidden(html, "closed-container"))
+        self.assertFalse(_is_container_hidden(html, "form-container"))
+
+    @override_settings(WEDDING_DATE=_wedding_date_in(10))
+    def test_already_confirmed_group_still_sees_success_state_after_deadline(self):
+        self.grupo.status_confirmacao = True
+        self.grupo.save()
+        url = reverse('core:home', args=[self.grupo.codigo_acesso])
+        response = self.client.get(url)
+        html = response.content.decode()
+        self.assertFalse(_is_container_hidden(html, "success-container"))
+        self.assertTrue(_is_container_hidden(html, "closed-container"))
+        self.assertTrue(_is_container_hidden(html, "form-container"))
+
+    @override_settings(WEDDING_DATE=_wedding_date_in(10))
+    def test_api_confirmar_presenca_rejected_after_deadline(self):
+        url = reverse('core:api_confirmar', args=[self.grupo.codigo_acesso])
+        data = {'confirmacao': [str(self.convidado.id)]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("encerrou", response.json()['error'])
+        self.convidado.refresh_from_db()
+        self.assertFalse(self.convidado.status_confirmacao)
+
+    @override_settings(WEDDING_DATE=_wedding_date_in(60))
+    def test_api_confirmar_presenca_still_works_before_deadline(self):
+        url = reverse('core:api_confirmar', args=[self.grupo.codigo_acesso])
+        data = {'confirmacao': [str(self.convidado.id)]}
+        response = self.client.post(url, json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)

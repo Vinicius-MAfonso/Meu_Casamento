@@ -44,7 +44,6 @@ else:
         }
     }
 
-# Use SQLite for tests to avoid remote DB issues
 RUNNING_TESTS = 'test' in sys.argv
 if RUNNING_TESTS:
     DATABASES['default'] = {
@@ -88,14 +87,11 @@ MIDDLEWARE = [
 
 if not DEBUG:
     MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
-    # CSPMiddleware must come after SecurityMiddleware/WhiteNoiseMiddleware
     MIDDLEWARE.insert(2, "csp.middleware.CSPMiddleware")
 
 if DEBUG:
     MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
 
-# django.contrib.staticfiles.storage.StaticFilesStorage is uncompressed/unversioned,
-# used only so local dev doesn't require a collectstatic run before every page load.
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     "staticfiles": {
@@ -149,10 +145,6 @@ if not DEBUG and not RUNNING_TESTS:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
-    # NOTE: 'unsafe-inline' is required because base.html has inline <script>/<style>
-    # blocks (toastr config, AOS.init(), the WEDDING_DATE bootstrap). Moving those to
-    # static files would let this be tightened to a nonce-based policy without
-    # 'unsafe-inline'.
     CONTENT_SECURITY_POLICY = {
         "DIRECTIVES": {
             "default-src": ["'self'"],
@@ -187,6 +179,9 @@ USE_TZ = True
 # -------------------------
 
 WEDDING_DATE = '2026-11-22T10:00:00'
+
+# RSVPs stop being accepted this many days before the wedding.
+RSVP_CLOSE_DAYS_BEFORE = 30
 
 # -------------------------
 # Static files
@@ -248,10 +243,6 @@ LOGGING = {
     },
 }
 
-# Optional local file logging for local development only. Most hosts (Render,
-# Heroku, etc.) have ephemeral/read-only filesystems in production, so writing
-# log files there is unreliable at best -- log to stdout and let the platform's
-# log aggregation handle it instead. Set LOG_TO_FILE=true locally to opt in.
 if DEBUG and os.getenv("LOG_TO_FILE", "false").lower() == "true":
     LOGS_DIR = BASE_DIR / 'logs'
     LOGS_DIR.mkdir(exist_ok=True)

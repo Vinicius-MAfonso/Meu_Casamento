@@ -32,9 +32,45 @@
   </h2>
 </div> 
 
-<div 
+<div
+  id="closed-container"
+  class="max-w-3xl mx-auto text-center relative z-10 flex flex-col items-center justify-center min-h-[400px] {% if grupo.status_confirmacao or not rsvp_closed %}hidden{% endif %}"
+>
+  <div data-aos="zoom-in" class="mb-6">
+    <svg
+      class="w-16 h-16 text-dark-green opacity-90"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+      ></path>
+    </svg>
+  </div>
+
+  <h2
+    data-aos="fade-down"
+    class="text-3xl md:text-5xl text-dark-green font-serif-display mb-4"
+  >
+    Prazo Encerrado
+  </h2>
+  <p
+    data-aos="fade-up"
+    class="text-lg md:text-xl text-dark-green/80 font-quicksand max-w-md"
+  >
+    O prazo para confirmação de presença já se encerrou. Se precisar alterar
+    algo, entre em contato diretamente com os noivos.
+  </p>
+</div>
+
+<div
   id="form-container"
-  class="max-w-3xl mx-auto text-center relative z-10 {% if grupo.status_confirmacao %}hidden{% endif %}"
+  class="max-w-3xl mx-auto text-center relative z-10 {% if grupo.status_confirmacao or rsvp_closed %}hidden{% endif %}"
 >
   <h2
     data-aos="fade-down"

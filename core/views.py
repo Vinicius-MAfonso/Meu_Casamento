@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST, require_safe
 from .models import Convidado, Grupo
+from .utils import is_rsvp_closed
 from django.core.cache import cache
 import time
 
@@ -15,7 +16,11 @@ def home(request, codigo_acesso):
     grupo = get_object_or_404(Grupo, codigo_acesso=codigo_acesso)
     convidados = grupo.convidados.order_by("nome")
 
-    return render(request, "core/home.html", {"grupo": grupo, "convidados": convidados})
+    return render(request, "core/home.html", {
+        "grupo": grupo,
+        "convidados": convidados,
+        "rsvp_closed": is_rsvp_closed(),
+    })
 
 
 def rate_limit_ip(request, max_requests=5, window=60):
@@ -55,6 +60,13 @@ def api_confirmar_presenca(request, codigo_acesso):
         ids_confirmados = data.get("confirmacao", [])
 
         grupo = get_object_or_404(Grupo, codigo_acesso=codigo_acesso)
+
+        if is_rsvp_closed():
+            return JsonResponse(
+                {"success": False, "error": "O prazo para confirmação de presença já encerrou."},
+                status=403,
+            )
+
         if grupo.status_confirmacao:
             return JsonResponse(
                 {"success": False, "error": "Presença já foi confirmada"}, status=400
