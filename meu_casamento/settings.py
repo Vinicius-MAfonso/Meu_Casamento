@@ -3,17 +3,22 @@ import os
 from dotenv import load_dotenv
 import dj_database_url
 import sys
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env_file = BASE_DIR / ('.env.local' if os.getenv("DJANGO_ENV") != "production" else '.env.prod')
 load_dotenv(env_file)
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", "")
+if not SECRET_KEY:
+    if os.getenv("DJANGO_ENV") == "production":
+        raise ImproperlyConfigured("SECRET_KEY must be configured in production.")
+    SECRET_KEY = "django-insecure-test-secret-key-1234567890-abcdefghij"
 
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()]
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 
 RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
@@ -129,12 +134,51 @@ WSGI_APPLICATION = 'meu_casamento.wsgi.application'
 # Cache configuration
 # -------------------------
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'meu-casamento-cache',
+def get_cache_settings(running_tests=False, django_env=None, cache_backend=None):
+    django_env = (django_env or os.getenv("DJANGO_ENV", "")).lower()
+    cache_backend = (cache_backend or os.getenv("CACHE_BACKEND", "")).strip().lower()
+
+    if running_tests:
+        return {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+                'LOCATION': 'meu-casamento-test-cache',
+            }
+        }
+
+    if cache_backend == 'database':
+        return {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+                'LOCATION': 'django_cache_table',
+            }
+        }
+
+    if cache_backend in {'locmem', 'memory', 'default'}:
+        return {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+                'LOCATION': 'meu-casamento-cache',
+            }
+        }
+
+    if django_env == 'production':
+        return {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+                'LOCATION': 'django_cache_table',
+            }
+        }
+
+    return {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'meu-casamento-cache',
+        }
     }
-}
+
+
+CACHES = get_cache_settings(RUNNING_TESTS, os.getenv("DJANGO_ENV"), os.getenv("CACHE_BACKEND"))
 
 # -------------------------
 # Security settings

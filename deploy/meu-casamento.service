@@ -1,0 +1,20 @@
+[Unit]
+Description=Meu Casamento Gunicorn service
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/home/vinic/projects/Meu_Casamento
+Environment=DJANGO_ENV=production
+Environment=SECRET_KEY=your-secret-key-here
+Environment=DEBUG=False
+Environment=ALLOWED_HOSTS=meucasamento.example.com
+Environment=CACHE_BACKEND=database
+Environment=DATABASE_URL=postgres://user:password@host/dbname
+ExecStart=/home/vinic/projects/Meu_Casamento/.venv/bin/gunicorn meu_casamento.wsgi:application --bind 127.0.0.1:8000 --workers 3
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

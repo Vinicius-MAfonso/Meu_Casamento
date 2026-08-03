@@ -5,6 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 import json
 import re
+from meu_casamento import settings as settings_module
 from .models import Grupo, Convidado
 
 
@@ -28,6 +29,19 @@ class ConvidadoModelTest(TestCase):
         self.assertEqual(convidado.nome, "João Silva")
         self.assertEqual(convidado.grupo, self.grupo)
         self.assertEqual(convidado.status_confirmacao, False)
+
+
+class CacheConfigurationTest(TestCase):
+    def test_production_defaults_to_database_cache(self):
+        caches = settings_module.get_cache_settings(
+            running_tests=False,
+            django_env="production",
+            cache_backend="",
+        )
+        self.assertEqual(
+            caches["default"]["BACKEND"],
+            "django.core.cache.backends.db.DatabaseCache",
+        )
 
 
 class HomeViewTest(TestCase):

@@ -3,6 +3,7 @@ import logging
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST, require_safe
+from django.db import transaction
 from .models import Convidado, Grupo
 from .utils import is_rsvp_closed
 from django.core.cache import cache
@@ -59,29 +60,34 @@ def api_confirmar_presenca(request, codigo_acesso):
         
         ids_confirmados = data.get("confirmacao", [])
 
-        grupo = get_object_or_404(Grupo, codigo_acesso=codigo_acesso)
-
-        if is_rsvp_closed():
-            return JsonResponse(
-                {"success": False, "error": "O prazo para confirmação de presença já encerrou."},
-                status=403,
+        with transaction.atomic():
+            grupo = get_object_or_404(
+                Grupo.objects.select_for_update(),
+                codigo_acesso=codigo_acesso,
             )
 
-        if grupo.status_confirmacao:
-            return JsonResponse(
-                {"success": False, "error": "Presença já foi confirmada"}, status=400
-            )
-        convidados = Convidado.objects.filter(grupo=grupo)
+            if is_rsvp_closed():
+                return JsonResponse(
+                    {"success": False, "error": "O prazo para confirmação de presença já encerrou."},
+                    status=403,
+                )
 
-        for convidado in convidados:
-            if str(convidado.id) in ids_confirmados:
-                convidado.status_confirmacao = True
-            else:
-                convidado.status_confirmacao = False
-            convidado.save()
+            if grupo.status_confirmacao:
+                return JsonResponse(
+                    {"success": False, "error": "Presença já foi confirmada"}, status=400
+                )
 
-        grupo.status_confirmacao = True
-        grupo.save()
+            convidados = Convidado.objects.filter(grupo=grupo)
+
+            for convidado in convidados:
+                if str(convidado.id) in ids_confirmados:
+                    convidado.status_confirmacao = True
+                else:
+                    convidado.status_confirmacao = False
+                convidado.save()
+
+            grupo.status_confirmacao = True
+            grupo.save()
 
         return JsonResponse(
             {"success": True, "message": "Presença confirmada com sucesso!"}

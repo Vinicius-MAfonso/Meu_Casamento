@@ -16,7 +16,7 @@ A beautiful Django-based wedding RSVP system with guest management, confirmation
 - **Backend**: Django 5.2.8
 - **Frontend**: HTML, Tailwind CSS, JavaScript
 - **Database**: PostgreSQL (production) / SQLite (development)
-- **Deployment**: Ready for Heroku/Gunicorn
+- **Deployment**: Gunicorn + Nginx on a Linux server, or Render
 
 ## Setup
 
@@ -82,32 +82,34 @@ A beautiful Django-based wedding RSVP system with guest management, confirmation
    python manage.py tailwind start
    ```
 
-### Production Deployment (Render)
+### Production Deployment
+
+The project is ready for either Render or a traditional Linux server such as EC2.
+
+#### Render
 
 1. In the Render Dashboard, create a **Web Service** from this repo:
    - **Build Command:** `./build.sh`
    - **Start Command:** `gunicorn meu_casamento.wsgi:application`
 2. Set environment variables (Settings → Environment): `DJANGO_ENV=production`,
-   `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS` (your custom domain, if any --
-   Render's own `xxx.onrender.com` hostname is added automatically via the
-   `RENDER_EXTERNAL_HOSTNAME` variable Render injects for you), and
-   `DATABASE_URL` (use the **Internal Database URL** from your Render Postgres
-   instance if the DB is in the same region -- it's faster and doesn't require
-   SSL; use the External URL only if connecting from outside Render).
-   `.env.prod.example` lists these for reference.
-3. `build.sh` installs dependencies, builds Tailwind CSS, runs `collectstatic`,
-   and runs `migrate` -- all as part of the build step, since Render's
-   Pre-Deploy Command (the equivalent of Heroku's release phase, for running
-   migrations separately after build/before traffic cutover) is only
-   available on paid instance types. If you're on a paid plan and want
-   migrations to run in that separate step instead, move the `python
-   manage.py migrate` line out of `build.sh` and into the Pre-Deploy Command
-   field under your service's Settings → Advanced.
+   `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS` (your custom domain or hostname),
+   and `DATABASE_URL`.
+3. `build.sh` installs dependencies, builds Tailwind CSS, creates the shared cache table,
+   runs `collectstatic`, and runs `migrate`.
+
+#### EC2 / Linux server
+
+1. Create a production environment file such as `.env.prod` with at least `DJANGO_ENV`,
+   `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`, `CACHE_BACKEND=database`, and
+   `DATABASE_URL`.
+2. Install dependencies and run the same build steps as in `build.sh`.
+3. Run Gunicorn behind Nginx on `127.0.0.1:8000` (or a Unix socket), not directly on the public network.
+4. Use a systemd service and an Nginx reverse proxy with TLS termination.
+   Example files are available in the `deploy/` directory.
 
 `Procfile.tailwind` is for **local development only** (runs `runserver` and
-the Tailwind watcher together via `honcho`/`foreman`) -- Render doesn't read
-Procfiles at all, it uses the Build/Start Command fields above, so never
-point production traffic at `manage.py runserver`.
+the Tailwind watcher together via `honcho`/`foreman`). Never point production
+traffic at `manage.py runserver`.
 
 ## Usage
 
