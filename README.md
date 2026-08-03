@@ -106,6 +106,18 @@ The project is ready for either Render or a traditional Linux server such as EC2
 3. Run Gunicorn behind Nginx on `127.0.0.1:8000` (or a Unix socket), not directly on the public network.
 4. Use a systemd service and an Nginx reverse proxy with TLS termination.
    Example files are available in the `deploy/` directory.
+5. For the service, prefer an environment file outside the repository, for example
+   `/etc/meu-casamento/.env.prod` with `chmod 600`, instead of putting secrets in the
+   systemd unit itself.
+6. For certificate issuance, start with the HTTP-only config in `deploy/nginx-http.conf`,
+   obtain the certificate with `certbot --nginx`, and then switch to the HTTPS config in
+   `deploy/nginx-meu-casamento.conf`.
+7. Enable the service after copying the unit file:
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now meu-casamento
+   sudo nginx -t && sudo systemctl reload nginx
+   ```
 
 `Procfile.tailwind` is for **local development only** (runs `runserver` and
 the Tailwind watcher together via `honcho`/`foreman`). Never point production
