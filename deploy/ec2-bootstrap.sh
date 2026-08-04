@@ -77,13 +77,16 @@ CACHE_BACKEND=database
 DATABASE_URL=$DATABASE_URL
 EOF
 
-install -o root -g www-data -m 640 /etc/meu-casamento/.env.prod /etc/meu-casamento/.env.prod
+install -o "$APP_USER" -g "$APP_GROUP" -m 640 /etc/meu-casamento/.env.prod /etc/meu-casamento/.env.prod
 ln -sfn /etc/meu-casamento/.env.prod "$APP_DIR/.env.prod"
 chown -R "$APP_USER":"$APP_GROUP" "$APP_DIR"
+chown "$APP_USER":"$APP_GROUP" /etc/meu-casamento/.env.prod
 
 sudo -u "$APP_USER" bash -lc "cd '$APP_DIR' && python3 -m venv .venv && ./.venv/bin/pip install --upgrade pip setuptools wheel && ./.venv/bin/pip install -r requirements.txt"
 
 cp "$APP_DIR/deploy/meu-casamento.service" /etc/systemd/system/meu-casamento.service
+sed -i "s/^User=.*/User=$APP_USER/" /etc/systemd/system/meu-casamento.service
+sed -i "s/^Group=.*/Group=$APP_GROUP/" /etc/systemd/system/meu-casamento.service
 cp "$APP_DIR/deploy/nginx-http.conf" /etc/nginx/sites-available/meu-casamento
 sed -i "s/meucasamento.example.com/$DOMAIN/g" /etc/nginx/sites-available/meu-casamento
 ln -sfn /etc/nginx/sites-available/meu-casamento /etc/nginx/sites-enabled/meu-casamento
@@ -97,7 +100,7 @@ ufw status verbose || true
 nginx -t
 systemctl restart nginx
 
-sudo -u "$APP_USER" bash -lc "cd '$APP_DIR' && ./.venv/bin/python3 manage.py tailwind install && ./.venv/bin/python3 manage.py tailwind build && ./.venv/bin/python3 manage.py createcachetable --noinput && ./.venv/bin/python3 manage.py collectstatic --no-input && ./.venv/bin/python3 manage.py migrate"
+sudo -u "$APP_USER" bash -lc "cd '$APP_DIR' && set -a && . /etc/meu-casamento/.env.prod && set +a && ./.venv/bin/python3 manage.py tailwind install && ./.venv/bin/python3 manage.py tailwind build && ./.venv/bin/python3 manage.py createcachetable --noinput && ./.venv/bin/python3 manage.py collectstatic --no-input && ./.venv/bin/python3 manage.py migrate"
 
 systemctl daemon-reload
 systemctl enable --now meu-casamento

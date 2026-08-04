@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=www-data
-Group=www-data
+User=meucasamento
+Group=meucasamento
 WorkingDirectory=/srv/meu-casamento
 EnvironmentFile=/etc/meu-casamento/.env.prod
 ExecStart=/srv/meu-casamento/.venv/bin/gunicorn meu_casamento.wsgi:application --bind 127.0.0.1:8000 --workers 3
