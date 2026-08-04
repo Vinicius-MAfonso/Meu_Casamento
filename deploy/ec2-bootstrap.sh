@@ -80,7 +80,8 @@ CACHE_BACKEND=database
 DATABASE_URL=$DATABASE_URL
 EOF
 
-install -o "$APP_USER" -g "$APP_GROUP" -m 640 /etc/meu-casamento/.env.prod /etc/meu-casamento/.env.prod
+chown "$APP_USER":"$APP_GROUP" /etc/meu-casamento/.env.prod
+chmod 640 /etc/meu-casamento/.env.prod
 ln -sfn /etc/meu-casamento/.env.prod "$APP_DIR/.env.prod"
 chown -R "$APP_USER":"$APP_GROUP" "$APP_DIR"
 chown "$APP_USER":"$APP_GROUP" /etc/meu-casamento/.env.prod
