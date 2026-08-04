@@ -16,6 +16,11 @@ POSTGRES_USER=${POSTGRES_USER:-meu_casamento}
 POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-$(openssl rand -hex 24)}
 DATABASE_URL=${DATABASE_URL:-postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/$POSTGRES_DB}
 ALLOWED_HOSTS=${ALLOWED_HOSTS:-$DOMAIN,localhost,127.0.0.1}
+WWW_DOMAIN=${WWW_DOMAIN:-}
+
+if [[ -n "$WWW_DOMAIN" && "${ALLOWED_HOSTS}" != *"$WWW_DOMAIN"* ]]; then
+  ALLOWED_HOSTS="$ALLOWED_HOSTS,$WWW_DOMAIN"
+fi
 
 if [[ $EUID -ne 0 ]]; then
   echo "Run this script as root (or with sudo)." >&2
@@ -103,7 +108,11 @@ cp "$APP_DIR/deploy/meu-casamento.service" /etc/systemd/system/meu-casamento.ser
 sed -i "s/^User=.*/User=$APP_USER/" /etc/systemd/system/meu-casamento.service
 sed -i "s/^Group=.*/Group=$APP_GROUP/" /etc/systemd/system/meu-casamento.service
 cp "$APP_DIR/deploy/nginx-http.conf" /etc/nginx/sites-available/meu-casamento
-sed -i "s/meucasamento.example.com/$DOMAIN/g" /etc/nginx/sites-available/meu-casamento
+if [[ -n "$WWW_DOMAIN" ]]; then
+  sed -i "s/meucasamento.example.com/$DOMAIN $WWW_DOMAIN/g" /etc/nginx/sites-available/meu-casamento
+else
+  sed -i "s/meucasamento.example.com/$DOMAIN/g" /etc/nginx/sites-available/meu-casamento
+fi
 ln -sfn /etc/nginx/sites-available/meu-casamento /etc/nginx/sites-enabled/meu-casamento
 rm -f /etc/nginx/sites-enabled/default
 
@@ -134,15 +143,34 @@ systemctl daemon-reload
 systemctl restart meu-casamento
 
 if [[ "$ENABLE_SSL" == "true" ]]; then
-  if certbot --nginx --non-interactive --agree-tos --email "$EMAIL" -d "$DOMAIN"; then
+  if [[ -n "$WWW_DOMAIN" ]]; then
+    CERT_DOMAINS="$DOMAIN,$WWW_DOMAIN"
+  else
+    CERT_DOMAINS="$DOMAIN"
+  fi
+
+  if [[ -n "$WWW_DOMAIN" ]]; then
+    CERTBOT_ARGS=(-d "$DOMAIN" -d "$WWW_DOMAIN")
+  else
+    CERTBOT_ARGS=(-d "$DOMAIN")
+  fi
+
+  if certbot --nginx --non-interactive --agree-tos --email "$EMAIL" "${CERTBOT_ARGS[@]}"; then
     cp "$APP_DIR/deploy/nginx-meu-casamento.conf" /etc/nginx/sites-available/meu-casamento
-    sed -i "s/meucasamento.example.com/$DOMAIN/g" /etc/nginx/sites-available/meu-casamento
+    if [[ -n "$WWW_DOMAIN" ]]; then
+      sed -i "s/meucasamento.example.com/$DOMAIN $WWW_DOMAIN/g" /etc/nginx/sites-available/meu-casamento
+    else
+      sed -i "s/meucasamento.example.com/$DOMAIN/g" /etc/nginx/sites-available/meu-casamento
+    fi
     ln -sfn /etc/nginx/sites-available/meu-casamento /etc/nginx/sites-enabled/meu-casamento
     nginx -t
     echo "SSL certificate installed successfully."
   else
     echo "Certbot could not finish TLS setup automatically. Check DNS and port 80/443, then run:"
     echo "  sudo certbot --nginx -d $DOMAIN"
+    if [[ -n "$WWW_DOMAIN" ]]; then
+      echo "  sudo certbot --nginx -d $DOMAIN -d $WWW_DOMAIN"
+    fi
   fi
 fi
 
