@@ -24,6 +24,10 @@ def home(request, codigo_acesso):
     })
 
 
+def index(request):
+    return render(request, "core/index.html")
+
+
 def rate_limit_ip(request, max_requests=5, window=60):
     # Prefer the real client IP forwarded by a trusted reverse proxy (nginx).
     # Nginx sets X-Real-IP with the remote address it accepted the connection from

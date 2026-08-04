@@ -85,6 +85,17 @@ ln -sfn /etc/meu-casamento/.env.prod "$APP_DIR/.env.prod"
 chown -R "$APP_USER":"$APP_GROUP" "$APP_DIR"
 chown "$APP_USER":"$APP_GROUP" /etc/meu-casamento/.env.prod
 
+# Install backup script and schedule daily backups at 02:00
+if [[ -f "$APP_DIR/deploy/backup_postgres.sh" ]]; then
+  install -m 755 "$APP_DIR/deploy/backup_postgres.sh" /usr/local/bin/meu-casamento-backup.sh || true
+fi
+mkdir -p /var/backups/meu-casamento
+chown -R "$APP_USER":"$APP_GROUP" /var/backups/meu-casamento || true
+cat > /etc/cron.d/meu-casamento-backup <<'CRON'
+0 2 * * * root /usr/local/bin/meu-casamento-backup.sh >> /var/log/meu-casamento/backup.log 2>&1
+CRON
+chmod 644 /etc/cron.d/meu-casamento-backup || true
+
 sudo -u "$APP_USER" bash -lc "cd '$APP_DIR' && python3 -m venv .venv && ./.venv/bin/pip install --upgrade pip setuptools wheel && ./.venv/bin/pip install -r requirements.txt"
 
 cp "$APP_DIR/deploy/meu-casamento.service" /etc/systemd/system/meu-casamento.service
