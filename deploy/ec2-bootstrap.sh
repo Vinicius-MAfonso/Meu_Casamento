@@ -115,7 +115,7 @@ ufw status verbose || true
 nginx -t
 systemctl restart nginx
 
-sudo -u "$APP_USER" bash -lc "cd '$APP_DIR' && set -a && . /etc/meu-casamento/.env.prod && set +a && ./.venv/bin/python3 manage.py tailwind install && ./.venv/bin/python3 manage.py tailwind build && ./.venv/bin/python3 manage.py createcachetable --noinput && ./.venv/bin/python3 manage.py collectstatic --no-input && ./.venv/bin/python3 manage.py migrate"
+sudo -u "$APP_USER" bash -lc "cd '$APP_DIR' && set -a && . /etc/meu-casamento/.env.prod && set +a && ./.venv/bin/python3 manage.py tailwind install && ./.venv/bin/python3 manage.py tailwind build && ./.venv/bin/python3 manage.py createcachetable && ./.venv/bin/python3 manage.py collectstatic --no-input && ./.venv/bin/python3 manage.py migrate"
 
 systemctl daemon-reload
 systemctl enable --now meu-casamento
