@@ -506,7 +506,7 @@
       };
     </script>
     <script>
-      window.WEDDING_DATE = "{{ WEDDING_DATE }}";
+      window.WEDDING_DATE = "{{ WEDDING_DATE|escapejs }}";
     </script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <script src="{% static 'js/toast.js' %}"></script>
