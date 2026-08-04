@@ -11,7 +11,10 @@ REPO_URL=${REPO_URL:-https://github.com/your-user/Meu_Casamento.git}
 BRANCH=${BRANCH:-main}
 REPO_SOURCE_DIR=${REPO_SOURCE_DIR:-}
 SECRET_KEY=${SECRET_KEY:-$(openssl rand -base64 48 | tr -d '\n')}
-DATABASE_URL=${DATABASE_URL:-postgres://meu_casamento:meu_casamento@localhost:5432/meu_casamento}
+POSTGRES_DB=${POSTGRES_DB:-meu_casamento}
+POSTGRES_USER=${POSTGRES_USER:-meu_casamento}
+POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-$(openssl rand -base64 24 | tr -d '\n')}
+DATABASE_URL=${DATABASE_URL:-postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/$POSTGRES_DB}
 ALLOWED_HOSTS=${ALLOWED_HOSTS:-$DOMAIN,localhost,127.0.0.1}
 
 if [[ $EUID -ne 0 ]]; then
@@ -65,8 +68,8 @@ fi
 chown -R "$APP_USER":"$APP_GROUP" "$APP_DIR"
 
 service postgresql start || true
-sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE rolname='meu_casamento'" | grep -q 1 || sudo -u postgres psql -c "CREATE ROLE meu_casamento WITH LOGIN PASSWORD 'meu_casamento';"
-sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname='meu_casamento'" | grep -q 1 || sudo -u postgres psql -c "CREATE DATABASE meu_casamento OWNER meu_casamento;"
+sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE rolname='$POSTGRES_USER'" | grep -q 1 || sudo -u postgres psql -c "CREATE ROLE $POSTGRES_USER WITH LOGIN PASSWORD '$POSTGRES_PASSWORD';"
+sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname='$POSTGRES_DB'" | grep -q 1 || sudo -u postgres psql -c "CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;"
 
 cat > /etc/meu-casamento/.env.prod <<EOF
 DJANGO_ENV=production

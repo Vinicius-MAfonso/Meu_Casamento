@@ -25,7 +25,11 @@ def home(request, codigo_acesso):
 
 
 def rate_limit_ip(request, max_requests=5, window=60):
-    ip = request.META.get('REMOTE_ADDR', 'unknown')
+    # Prefer the real client IP forwarded by a trusted reverse proxy (nginx).
+    # Nginx sets X-Real-IP with the remote address it accepted the connection from
+    # (and it will overwrite any value from the client), so this is safe when
+    # Gunicorn is only exposed to the proxy.
+    ip = request.META.get('HTTP_X_REAL_IP') or request.META.get('REMOTE_ADDR', 'unknown')
     cache_key = f"ratelimit_{ip}"
     requests = cache.get(cache_key, [])
     now = time.time()
