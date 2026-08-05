@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -euo pipefail
 
 APP_DIR=${APP_DIR:-/srv/meu-casamento}
@@ -6,8 +7,8 @@ APP_GROUP=${APP_GROUP:-$APP_USER}
 BRANCH=${BRANCH:-main}
 SERVICE_NAME=${SERVICE_NAME:-meu-casamento}
 
-if [[ $EUID -ne 0 ]]; then
-  echo "Run as root (sudo ./deploy/update.sh)." >&2
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Rode como root (sudo ./deploy/update.sh)." >&2
   exit 1
 fi
 
