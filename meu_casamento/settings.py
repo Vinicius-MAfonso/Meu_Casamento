@@ -20,9 +20,21 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 
+# Automatically allow Cloud Run domains and custom wedding domains
+for domain in [".run.app", ".a.run.app", ".rvwedding.com.br", "rvwedding.com.br"]:
+    if domain not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(domain)
+
 RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
-if RENDER_EXTERNAL_HOSTNAME:
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.run.app",
+    "https://*.a.run.app",
+    "https://rvwedding.com.br",
+    "https://www.rvwedding.com.br",
+]
 
 # -------------------------
 # Database configuration
