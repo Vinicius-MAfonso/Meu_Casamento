@@ -1,0 +1,25 @@
+.git
+.gitignore
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+venv
+ENV
+env.bak
+venv.bak
+.env*
+
+# SQLite Database
+db.sqlite3
+
+# Static / Media / Tailwind
+staticfiles/
+media/
+
+# logs
+logs/
+*.log
