@@ -189,11 +189,13 @@ if not DEBUG and not RUNNING_TESTS:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
+    SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+    SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
     CONTENT_SECURITY_POLICY = {
         "DIRECTIVES": {
             "default-src": ["'self'"],
             "script-src": [
-                "'self'", "'unsafe-inline'",
+                "'self'",
                 "cdnjs.cloudflare.com", "unpkg.com", "cdn.jsdelivr.net",
             ],
             "style-src": [
@@ -211,6 +213,7 @@ if not DEBUG and not RUNNING_TESTS:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # -------------------------
+# Internationalization
 # -------------------------
 
 LANGUAGE_CODE = 'pt-br'

@@ -25,12 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const formData = new FormData(this);
     const confirmacao = formData.getAll("confirmacao");
     const codigo_acesso = formData.get("codigo_acesso");
+    const actionUrl = this.dataset.action || this.getAttribute("action") || ("/api/confirmar/" + codigo_acesso + "/");
+    const csrfToken = formData.get("csrfmiddlewaretoken") || getCookie("csrftoken");
 
-    fetch("/api/confirmar/" + codigo_acesso + "/", {
+    fetch(actionUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken"),
+        "X-CSRFToken": csrfToken,
       },
       body: JSON.stringify({
         confirmacao: confirmacao,

@@ -1,7 +1,7 @@
 import json
 import logging
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.views.decorators.http import require_POST, require_safe
 from django.db import transaction
 from .models import Convidado, Grupo
@@ -28,12 +28,20 @@ def index(request):
     return render(request, "core/index.html")
 
 
+def get_client_ip(request):
+    """
+    Extract the client IP from request headers.
+    Supports Cloud Run and standard reverse proxies (X-Forwarded-For / X-Real-IP),
+    falling back to REMOTE_ADDR.
+    """
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        return x_forwarded_for.split(',')[0].strip()
+    return request.META.get('HTTP_X_REAL_IP') or request.META.get('REMOTE_ADDR', 'unknown')
+
+
 def rate_limit_ip(request, max_requests=5, window=60):
-    # Prefer the real client IP forwarded by a trusted reverse proxy (nginx).
-    # Nginx sets X-Real-IP with the remote address it accepted the connection from
-    # (and it will overwrite any value from the client), so this is safe when
-    # Gunicorn is only exposed to the proxy.
-    ip = request.META.get('HTTP_X_REAL_IP') or request.META.get('REMOTE_ADDR', 'unknown')
+    ip = get_client_ip(request)
     cache_key = f"ratelimit_{ip}"
     requests = cache.get(cache_key, [])
     now = time.time()
@@ -65,8 +73,8 @@ def api_confirmar_presenca(request, codigo_acesso):
             return JsonResponse(
                 {"success": False, "error": "Formato de dados inválido"}, status=400
             )
-        
-        ids_confirmados = data.get("confirmacao", [])
+
+        ids_confirmados = set(str(item) for item in data.get("confirmacao", []))
 
         with transaction.atomic():
             grupo = get_object_or_404(
@@ -85,17 +93,16 @@ def api_confirmar_presenca(request, codigo_acesso):
                     {"success": False, "error": "Presença já foi confirmada"}, status=400
                 )
 
-            convidados = Convidado.objects.filter(grupo=grupo)
+            convidados = list(Convidado.objects.filter(grupo=grupo))
 
             for convidado in convidados:
-                if str(convidado.id) in ids_confirmados:
-                    convidado.status_confirmacao = True
-                else:
-                    convidado.status_confirmacao = False
-                convidado.save()
+                convidado.status_confirmacao = str(convidado.id) in ids_confirmados
+
+            if convidados:
+                Convidado.objects.bulk_update(convidados, ["status_confirmacao"])
 
             grupo.status_confirmacao = True
-            grupo.save()
+            grupo.save(update_fields=["status_confirmacao"])
 
         return JsonResponse(
             {"success": True, "message": "Presença confirmada com sucesso!"}
@@ -110,4 +117,4 @@ def api_confirmar_presenca(request, codigo_acesso):
 
 @require_safe
 def api_status_projeto(request):
-    return HttpResponse('{"status": "ok"}', content_type="application/json", status=200)
+    return JsonResponse({"status": "ok"})

@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 env:
@@ -12,9 +15,38 @@ env:
   REGION: southamerica-east1
 
 jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Tests
+        env:
+          DJANGO_ENV: test
+          SECRET_KEY: ci-test-secret-key-only
+          DEBUG: 'False'
+        run: |
+          python manage.py test
+
   deploy:
     name: Build and Deploy to Cloud Run
-    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout Repository
@@ -35,3 +67,4 @@ jobs:
             --region ${{ env.REGION }} \
             --project ${{ env.PROJECT_ID }} \
             --quiet
+

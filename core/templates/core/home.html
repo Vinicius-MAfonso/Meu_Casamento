@@ -95,6 +95,7 @@
   <form
     data-aos="zoom-in-up"
     id="rsvp-form"
+    action="{% url 'core:api_confirmar' grupo.codigo_acesso %}"
     class="w-full max-w-lg mx-auto bg-wedding-cream/10 backdrop-blur-sm rounded-xl p-6 md:p-8 shadow-sm border border-dark-green/10"
   >
     {% csrf_token %}

@@ -20,11 +20,16 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
+# Create non-root user
+RUN useradd -m -u 1000 appuser
+
 # Copy project files
 COPY . /app/
 
-# Make the entrypoint executable
-RUN chmod +x /app/entrypoint.sh
+# Set ownership and make entrypoint executable
+RUN chown -R appuser:appuser /app && chmod +x /app/entrypoint.sh
+
+USER appuser
 
 # Set the PORT environment variable if not already set (Cloud Run uses 8080 by default)
 ENV PORT=8080

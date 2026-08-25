@@ -23,6 +23,7 @@ function initCountdown() {
   if (!elDias || !elHoras || !elMinutos || !elSegundos) return;
 
   const pad = (value, length = 2) => String(value).padStart(length, "0");
+  let intervalId = null;
 
   function updateCountdown() {
     const now = Date.now();
@@ -33,6 +34,10 @@ function initCountdown() {
       elHoras.textContent = "00";
       elMinutos.textContent = "00";
       elSegundos.textContent = "00";
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
       return;
     }
 
@@ -50,7 +55,7 @@ function initCountdown() {
   }
 
   updateCountdown();
-  setInterval(updateCountdown, 1000);
+  intervalId = setInterval(updateCountdown, 1000);
 }
 
 if (document.readyState === "loading") {

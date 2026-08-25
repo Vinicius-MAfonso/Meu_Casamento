@@ -12,11 +12,11 @@
     <meta property="og:title" content="Casamento de Rebeca & Vinicius" />
     <meta property="og:description" content="Celebre conosco o nosso amor no dia 22 de Novembro de 2026." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="{% static 'images/favicon.ico' %}" />
+    <meta property="og:image" content="{% static 'images/logo.png' %}" />
 
     <!-- Stylesheets -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" crossorigin="anonymous" />
     <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet" />
     <link href="{% static 'css/custom/styles.css' %}" rel="stylesheet" />
     
@@ -445,20 +445,17 @@
     </main>
 
     <!-- Vendor Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js" crossorigin="anonymous"></script>
     
     <!-- Application Scripts -->
     <script src="{% static 'js/toast.js' %}"></script>
     <script src="{% static 'js/countdown.js' %}"></script>
     <script src="{% static 'js/pix_btn.js' %}"></script>
     <script src="{% static 'js/post_invitation.js' %}"></script>
-    
-    <script>
-      AOS.init();
-    </script>
+    <script src="{% static 'js/init.js' %}"></script>
   </body>
 </html>

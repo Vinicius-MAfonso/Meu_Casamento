@@ -94,7 +94,7 @@ class APIConfirmarPresencaTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("já foi confirmada", response.json()['error'])
 
-    def test_rate_limit_uses_remote_addr_only(self):
+    def test_rate_limit_uses_x_forwarded_for(self):
         from django.test import RequestFactory
         from .views import rate_limit_ip
 
@@ -104,13 +104,59 @@ class APIConfirmarPresencaTest(TestCase):
             reverse('core:api_confirmar', args=[self.grupo.codigo_acesso]),
             content_type='application/json',
             REMOTE_ADDR='1.2.3.4',
-            HTTP_X_FORWARDED_FOR='8.8.8.8',
+            HTTP_X_FORWARDED_FOR='203.0.113.195, 70.41.3.18',
         )
 
         for _ in range(5):
             self.assertTrue(rate_limit_ip(request, max_requests=5, window=60))
 
         self.assertFalse(rate_limit_ip(request, max_requests=5, window=60))
+
+    def test_rate_limit_uses_x_real_ip(self):
+        from django.test import RequestFactory
+        from .views import rate_limit_ip
+
+        cache.clear()
+        factory = RequestFactory()
+        request = factory.post(
+            reverse('core:api_confirmar', args=[self.grupo.codigo_acesso]),
+            content_type='application/json',
+            REMOTE_ADDR='1.2.3.4',
+            HTTP_X_REAL_IP='198.51.100.1',
+        )
+
+        for _ in range(5):
+            self.assertTrue(rate_limit_ip(request, max_requests=5, window=60))
+
+        self.assertFalse(rate_limit_ip(request, max_requests=5, window=60))
+
+    def test_rate_limit_uses_remote_addr_fallback(self):
+        from django.test import RequestFactory
+        from .views import rate_limit_ip
+
+        cache.clear()
+        factory = RequestFactory()
+        request = factory.post(
+            reverse('core:api_confirmar', args=[self.grupo.codigo_acesso]),
+            content_type='application/json',
+            REMOTE_ADDR='1.2.3.4',
+        )
+
+        for _ in range(5):
+            self.assertTrue(rate_limit_ip(request, max_requests=5, window=60))
+
+        self.assertFalse(rate_limit_ip(request, max_requests=5, window=60))
+
+
+class IndexAndStatusViewTest(TestCase):
+    def test_index_view(self):
+        response = self.client.get(reverse('core:index'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_status_view(self):
+        response = self.client.get(reverse('core:api_status'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "ok"})
 
 
 def _wedding_date_in(days):
