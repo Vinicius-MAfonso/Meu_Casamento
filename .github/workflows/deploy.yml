@@ -12,7 +12,7 @@ on:
 env:
   PROJECT_ID: meu-casamento-506613
   SERVICE_NAME: meu-casamento
-  REGION: southamerica-east1
+  REGION: us-east1
 
 jobs:
   test:
