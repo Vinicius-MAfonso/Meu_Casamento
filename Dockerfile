@@ -16,29 +16,21 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Install Python dependencies and pre-install Tailwind CLI binary
 COPY requirements.txt /app/
-RUN pip install --upgrade pip && pip install -r requirements.txt
-
-# Create non-root user
-RUN useradd -m -u 1000 appuser
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt && \
+    python -c "import pytailwindcss; pytailwindcss.install()"
 
 # Copy project files
 COPY . /app/
 
-# Build static assets at Docker image build time
-RUN python manage.py tailwind build && \
-    python manage.py collectstatic --noinput
-
-# Create non-root user
-RUN useradd -m -u 1000 appuser && \
-    chown -R appuser:appuser /app && \
-    chmod +x /app/entrypoint.sh
-
-USER appuser
+# Make the entrypoint executable
+RUN chmod +x /app/entrypoint.sh
 
 # Set the PORT environment variable if not already set (Cloud Run uses 8080 by default)
 ENV PORT=8080
 
 # Run the entrypoint script
 ENTRYPOINT ["/app/entrypoint.sh"]
+
