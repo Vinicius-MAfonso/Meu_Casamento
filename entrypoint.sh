@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+echo "Buildando Tailwind CSS..."
+python manage.py tailwind build
+
 echo "Coletando arquivos estáticos..."
 python manage.py collectstatic --noinput
 
