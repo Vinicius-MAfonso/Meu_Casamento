@@ -66,5 +66,7 @@ jobs:
             --source . \
             --region ${{ env.REGION }} \
             --project ${{ env.PROJECT_ID }} \
+            --allow-unauthenticated \
             --quiet
+
 

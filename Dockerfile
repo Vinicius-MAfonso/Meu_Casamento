@@ -26,8 +26,14 @@ RUN useradd -m -u 1000 appuser
 # Copy project files
 COPY . /app/
 
-# Set ownership and make entrypoint executable
-RUN chown -R appuser:appuser /app && chmod +x /app/entrypoint.sh
+# Build static assets at Docker image build time
+RUN python manage.py tailwind build && \
+    python manage.py collectstatic --noinput
+
+# Create non-root user
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app && \
+    chmod +x /app/entrypoint.sh
 
 USER appuser
 
