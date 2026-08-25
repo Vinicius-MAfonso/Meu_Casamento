@@ -2,13 +2,24 @@
 <!DOCTYPE html>
 <html lang="pt-br" class="scroll-smooth scroll-pt-20">
   <head>
-    <title>Rebeca e Vinicius</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Rebeca & Vinicius</title>
+    
+    <!-- SEO & Social Meta Tags -->
+    <meta name="description" content="Site oficial de casamento de Rebeca e Vinicius - 22 de Novembro de 2026." />
+    <meta property="og:title" content="Casamento de Rebeca & Vinicius" />
+    <meta property="og:description" content="Celebre conosco o nosso amor no dia 22 de Novembro de 2026." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="{% static 'images/favicon.ico' %}" />
+
+    <!-- Stylesheets -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet" />
     <link href="{% static 'css/custom/styles.css' %}" rel="stylesheet" />
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    
     <link
       rel="icon"
       type="image/ico"
@@ -17,136 +28,98 @@
   </head>
 
   <body
-    class="leading-normal tracking-normal overflow-x-hidden bg-wedding-cream"
+    class="leading-normal tracking-normal overflow-x-hidden bg-wedding-cream font-quicksand text-dark-green"
   >
-    <nav
-      class="fixed w-full z-50 top-0 start-0 bg-wedding-cream/95 backdrop-blur-md shadow-sm border-b border-dark-green/10"
-    >
-      <div
-        class="max-w-6xl mx-auto flex flex-wrap items-center justify-between p-4"
-      >
-        <a
-          href="#inicio"
-          class="flex items-center space-x-3 rtl:space-x-reverse"
-        >
-          <img
-            src="{% static 'images/logo.png' %}"
-            alt="Rebeca e Vinicius logo"
-            class="w-6 h-6 md:w-6 md:h-6 object-contain"
-          />
-          <span class="sr-only">Rebeca e Vinicius</span>
-        </a>
-
-        <button
-          id="nav-toggle"
-          data-collapse-toggle="navbar-default"
-          type="button"
-          class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-dark-green rounded-lg md:hidden hover:bg-wedding-green/20 focus:outline-none focus:ring-2 focus:ring-dark-green/20"
-          aria-controls="navbar-default"
-          aria-expanded="false"
-        >
-          <span class="sr-only">Open main menu</span>
-          <svg
-            class="w-5 h-5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 17 14"
-          >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M1 1h15M1 7h15M1 13h15"
-            />
-          </svg>
-        </button>
-
-        <div class="hidden w-full md:block md:w-auto" id="navbar-menu">
-          <ul
-            class="font-quicksand font-medium flex flex-col p-4 md:p-0 mt-4 border border-dark-green/10 rounded-lg bg-wedding-cream md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-transparent"
-          >
-            <li>
-              <a
-                href="#inicio"
-                class="block py-2 px-3 text-dark-green rounded hover:bg-wedding-green/20 md:hover:bg-transparent md:border-0 md:hover:text-light-brown md:p-0 transition-colors"
-                >Início</a
-              >
-            </li>
-            <li>
-              <a
-                href="#sobre"
-                class="block py-2 px-3 text-dark-green rounded hover:bg-wedding-green/20 md:hover:bg-transparent md:border-0 md:hover:text-light-brown md:p-0 transition-colors"
-                >O Casamento</a
-              >
-            </li>
-            <li>
-              <a
-                href="#detalhes"
-                class="block py-2 px-3 text-dark-green rounded hover:bg-wedding-green/20 md:hover:bg-transparent md:border-0 md:hover:text-light-brown md:p-0 transition-colors"
-                >Detalhes</a
-              >
-            </li>
-            <li>
-              <a
-                href="#rsvp"
-                class="block py-2 px-3 text-dark-green rounded hover:bg-wedding-green/20 md:hover:bg-transparent md:border-0 md:hover:text-light-brown md:p-0 transition-colors"
-                >RSVP</a
-              >
-            </li>
-            <li>
-              <a
-                href="#lista-de-presentes"
-                class="block py-2 px-3 text-dark-green rounded hover:bg-wedding-green/20 md:hover:bg-transparent md:border-0 md:hover:text-light-brown md:p-0 transition-colors"
-                >Lista de Presentes</a
-              >
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
     <main class="w-full h-auto">
+      <!-- HERO SECTION -->
       <section
         id="inicio"
-        class="flex flex-col justify-center items-center bg-wedding-cream min-h-dvh px-4 py-10"
+        class="relative min-h-[92vh] md:min-h-screen flex flex-col justify-center items-center bg-wedding-cream px-4 py-16 overflow-hidden text-center"
       >
-        <div class="flex justify-center pb-8 w-full pt-16 md:pt-0">
-          <img
-            data-aos="zoom-in"
-            data-aos-duration="1500"
-            class="object-cover w-64 h-64 md:w-80 md:h-80 rounded-full shadow-lg border-4 border-wedding-green m-auto"
-            src="{% static 'images/foto-casal.jpg' %}"
-            alt="Foto do Casal"
-          />
+        <!-- Background Ambient Accents -->
+        <div class="absolute inset-0 pointer-events-none opacity-40">
+          <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-wedding-green/20 rounded-full blur-3xl"></div>
         </div>
-        <div class="mx-auto text-center z-10">
+
+        <div class="max-w-3xl mx-auto z-10 flex flex-col items-center">
+          <p
+            data-aos="fade-down"
+            data-aos-delay="150"
+            class="text-xs md:text-sm uppercase tracking-[0.3em] text-light-brown font-quicksand font-bold mb-4"
+          >
+            Celebre conosco este momento especial
+          </p>
+
           <h1
             data-aos="fade-up"
-            data-aos-delay="300"
-            class="text-4xl md:text-6xl font-nunito-sans text-dark-green uppercase font-light tracking-widest mb-2"
+            data-aos-delay="250"
+            class="text-4xl sm:text-6xl md:text-7xl font-serif-display text-dark-green tracking-wide mb-3 font-normal"
           >
             Rebeca & Vinicius
           </h1>
+
+          <!-- Ornamental Divider -->
+          <div
+            data-aos="zoom-in"
+            data-aos-delay="350"
+            class="flex items-center justify-center gap-3 my-4 w-48 mx-auto text-light-brown"
+          >
+            <span class="h-px bg-light-brown/60 flex-1"></span>
+            <span class="text-sm">✦</span>
+            <span class="h-px bg-light-brown/60 flex-1"></span>
+          </div>
+
           <h2
             data-aos="fade-up"
-            data-aos-delay="500"
-            class="text-xl md:text-2xl font-nunito-sans text-dark-green tracking-widest"
+            data-aos-delay="450"
+            class="text-lg md:text-2xl font-quicksand text-dark-green font-medium tracking-[0.25em] uppercase mt-1"
           >
-            - 22.11.2026 -
+            22 . 11 . 2026
           </h2>
+
+          <p
+            data-aos="fade-up"
+            data-aos-delay="550"
+            class="text-sm md:text-base font-quicksand text-dark-brown/70 tracking-widest mt-2"
+          >
+            Sumaré - São Paulo
+          </p>
+
+          <!-- Scroll to Details Cue -->
+          <a
+            href="#sobre"
+            data-aos="fade-up"
+            data-aos-delay="700"
+            class="mt-12 md:mt-16 inline-flex flex-col items-center text-dark-green/60 hover:text-dark-green transition-colors text-xs font-quicksand uppercase tracking-[0.2em] gap-2 group cursor-pointer"
+          >
+            <span class="group-hover:translate-y-0.5 transition-transform font-medium">Conheça os Detalhes</span>
+            <svg class="w-4 h-4 text-light-brown animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </a>
         </div>
       </section>
 
-      <section id="sobre" class="flex flex-col md:flex-row min-h-screen">
+      <!-- SOBRE / CONVITE & CONTAGEM REGRESSIVA -->
+      <section id="sobre" class="flex flex-col md:flex-row min-h-[550px]">
+        <!-- Invitation Side -->
         <div
-          class="flex items-center justify-center bg-wedding-green p-8 md:p-16 flex-1"
+          class="flex flex-col items-center justify-center bg-wedding-green p-8 sm:p-12 md:p-16 flex-1 text-center relative"
         >
+          <div data-aos="fade-down" class="mb-4 text-dark-green/50">
+            <i class="fas fa-heart text-2xl"></i>
+          </div>
+          <h3
+            data-aos="fade-down"
+            data-aos-delay="100"
+            class="text-2xl md:text-3xl font-serif-display text-dark-green mb-6"
+          >
+            Nossa Celebração
+          </h3>
           <p
             data-aos="fade-right"
             data-aos-duration="1000"
-            class="text-lg md:text-xl text-center font-quicksand text-dark-green max-w-md leading-relaxed"
+            class="text-lg md:text-xl font-quicksand text-dark-green max-w-md leading-relaxed"
           >
             É com imensa alegria que nós, Rebeca e Vinicius, convidamos você
             para estar ao nosso lado em um dos momentos mais especiais das
@@ -156,73 +129,78 @@
           </p>
         </div>
 
+        <!-- Countdown Side -->
         <div
-          class="flex flex-col items-center justify-center bg-dark-green gap-8 p-8 md:p-16 flex-1"
+          class="flex flex-col items-center justify-center bg-dark-green gap-8 p-8 sm:p-12 md:p-16 flex-1 text-center"
         >
+          <div data-aos="fade-down" class="text-light-brown/60">
+            <i class="far fa-calendar-alt text-2xl"></i>
+          </div>
           <h2
             data-aos="fade-down"
-            class="text-2xl md:text-3xl text-center font-quicksand text-wedding-cream"
+            data-aos-delay="100"
+            class="text-2xl md:text-3xl font-serif-display text-wedding-cream"
           >
             Contagem Regressiva
           </h2>
-          <div class="flex flex-wrap justify-center gap-3 md:gap-4 text-center">
+          <div id="countdown-container" data-date="{{ WEDDING_DATE }}" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-[280px] md:max-w-none mx-auto text-center">
             <div
               data-aos="flip-left"
               data-aos-delay="0"
-              class="w-16 h-16 md:w-20 md:h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center shadow-lg"
+              class="w-18 h-20 md:w-20 md:h-24 bg-wedding-cream rounded-xl flex flex-col items-center justify-center shadow-lg border border-light-brown/20 px-3 transition-transform hover:scale-105 duration-300"
             >
               <span
-                class="text-xl md:text-2xl font-bold text-dark-green font-quicksand"
+                class="text-2xl md:text-3xl font-bold text-dark-green font-quicksand"
                 id="dias"
                 >0</span
               >
               <span
-                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green font-quicksand"
+                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green/80 font-quicksand font-bold mt-1"
                 >Dias</span
               >
             </div>
             <div
               data-aos="flip-left"
               data-aos-delay="100"
-              class="w-16 h-16 md:w-20 md:h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center shadow-lg"
+              class="w-18 h-20 md:w-20 md:h-24 bg-wedding-cream rounded-xl flex flex-col items-center justify-center shadow-lg border border-light-brown/20 px-3 transition-transform hover:scale-105 duration-300"
             >
               <span
-                class="text-xl md:text-2xl font-bold text-dark-green font-quicksand"
+                class="text-2xl md:text-3xl font-bold text-dark-green font-quicksand"
                 id="horas"
                 >0</span
               >
               <span
-                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green font-quicksand"
+                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green/80 font-quicksand font-bold mt-1"
                 >Horas</span
               >
             </div>
             <div
               data-aos="flip-left"
               data-aos-delay="200"
-              class="w-16 h-16 md:w-20 md:h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center shadow-lg"
+              class="w-18 h-20 md:w-20 md:h-24 bg-wedding-cream rounded-xl flex flex-col items-center justify-center shadow-lg border border-light-brown/20 px-3 transition-transform hover:scale-105 duration-300"
             >
               <span
-                class="text-xl md:text-2xl font-bold text-dark-green font-quicksand"
+                class="text-2xl md:text-3xl font-bold text-dark-green font-quicksand"
                 id="minutos"
                 >0</span
               >
               <span
-                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green font-quicksand"
+                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green/80 font-quicksand font-bold mt-1"
                 >Min</span
               >
             </div>
             <div
               data-aos="flip-left"
               data-aos-delay="300"
-              class="w-16 h-16 md:w-20 md:h-20 bg-wedding-cream rounded-lg flex flex-col items-center justify-center shadow-lg"
+              class="w-18 h-20 md:w-20 md:h-24 bg-wedding-cream rounded-xl flex flex-col items-center justify-center shadow-lg border border-light-brown/20 px-3 transition-transform hover:scale-105 duration-300"
             >
               <span
-                class="text-xl md:text-2xl font-bold text-dark-green font-quicksand"
+                class="text-2xl md:text-3xl font-bold text-dark-green font-quicksand"
                 id="segundos"
                 >0</span
               >
               <span
-                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green font-quicksand"
+                class="text-[10px] md:text-xs uppercase tracking-widest text-dark-green/80 font-quicksand font-bold mt-1"
                 >Seg</span
               >
             </div>
@@ -230,94 +208,142 @@
         </div>
       </section>
 
-      <section id="detalhes" class="bg-wedding-cream h-auto py-16 px-4">
+      <!-- DETALHES SECTION -->
+      <section id="detalhes" class="bg-wedding-cream h-auto py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center mb-16">
+          <div data-aos="fade-down" class="mb-3 text-light-brown">
+            <i class="fas fa-gem text-xl"></i>
+          </div>
+          <h2 data-aos="fade-up" class="text-3xl md:text-5xl font-serif-display text-dark-green mb-4">
+            Detalhes do Grande Dia
+          </h2>
+          <p data-aos="fade-up" data-aos-delay="100" class="text-base md:text-lg font-quicksand text-dark-brown/80 max-w-xl mx-auto">
+            Tudo o que você precisa saber para celebrar conosco com todo o carinho e conforto.
+          </p>
+        </div>
+
         <div
-          class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 mb-16"
+          class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
         >
-          <div
+          <!-- Card Quando -->
+          <article
             data-aos="fade-up"
             data-aos-delay="0"
-            class="flex flex-col items-center text-center"
+            class="group bg-wedding-cream rounded-2xl p-6 sm:p-8 shadow-sm border border-dark-green/10 hover:shadow-md hover:border-light-brown/50 transition-all duration-300 flex flex-col items-center text-center"
           >
-            <img
-              src="{% static 'images/hora.jpg' %}"
-              class="object-cover w-60 h-60 mb-4 rounded-full"
-              alt="Detalhe Relógio"
-            />
-            <h3 class="text-dark-brown font-bold font-quicksand text-xl mb-2">
-              Quando
+            <div class="overflow-hidden rounded-full ring-4 ring-wedding-green/50 mb-6 group-hover:scale-105 transition-transform duration-500 w-52 h-52 sm:w-56 sm:h-56">
+              <img
+                src="{% static 'images/hora.jpg' %}"
+                class="object-cover w-full h-full"
+                alt="Detalhe Relógio"
+              />
+            </div>
+            <div class="inline-flex items-center gap-2 mb-2 text-light-brown text-xs uppercase tracking-widest font-bold font-quicksand">
+              <i class="far fa-clock"></i>
+              <span>Quando</span>
+            </div>
+            <h3 class="text-2xl font-serif-display text-dark-green mb-2">
+              22 de Novembro
             </h3>
-            <h4 class="text-dark-brown font-quicksand">22/11/2026</h4>
-            <h4 class="text-dark-brown font-quicksand">Cerimônia: 10:00</h4>
-          </div>
-          <div
+            <h4 class="text-dark-brown font-quicksand text-lg font-semibold">
+              Cerimônia: 10:00
+            </h4>
+            <p class="text-dark-brown/70 font-quicksand text-sm mt-2">
+              Recomendamos chegar com 15 minutos de antecedência.
+            </p>
+          </article>
+
+          <!-- Card Onde -->
+          <article
             data-aos="fade-up"
             data-aos-delay="200"
-            class="flex flex-col items-center text-center"
+            class="group bg-wedding-cream rounded-2xl p-6 sm:p-8 shadow-sm border border-dark-green/10 hover:shadow-md hover:border-light-brown/50 transition-all duration-300 flex flex-col items-center text-center"
           >
-            <img
-              src="{% static 'images/local.jpg' %}"
-              class="object-cover w-60 h-60 mb-4 rounded-full"
-              alt="Altar da Cerimônia"
-            />
-            <h3 class="text-dark-brown font-bold font-quicksand text-xl mb-2">
-              Onde
+            <div class="overflow-hidden rounded-full ring-4 ring-wedding-green/50 mb-6 group-hover:scale-105 transition-transform duration-500 w-52 h-52 sm:w-56 sm:h-56">
+              <img
+                src="{% static 'images/local.jpg' %}"
+                class="object-cover w-full h-full"
+                alt="Altar da Cerimônia"
+              />
+            </div>
+            <div class="inline-flex items-center gap-2 mb-2 text-light-brown text-xs uppercase tracking-widest font-bold font-quicksand">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Onde</span>
+            </div>
+            <h3 class="text-2xl font-serif-display text-dark-green mb-2">
+              Recanto Januário
             </h3>
-            <h4 class="text-dark-brown font-quicksand max-w-xs">
-              Recanto Januário - Sumaré/SP
+            <h4 class="text-dark-brown font-quicksand text-base max-w-xs mb-4 font-medium">
+              Sumaré / SP
             </h4>
-            <a
-              class="text-dark-green hover:text-dark-brown underline font-quicksand mt-2 transition-colors"
-              href="https://maps.app.goo.gl/rahBobaqaQLGoMqM9"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Ver no mapa
-            </a>
-            <a
-              class="text-dark-green hover:text-dark-brown underline font-quicksand mt-2 transition-colors"
-              href="https://youtu.be/us5v-MYhLgQ?si=FtypJu8wQ4mWuDGn"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Video auxiliar para chegar ao local
-            </a>
-          </div>
-          <div
+
+            <div class="flex flex-col sm:flex-row gap-2 w-full justify-center mt-auto pt-2">
+              <a
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-dark-green text-wedding-cream text-xs uppercase tracking-wider font-bold rounded-lg hover:bg-light-brown hover:text-dark-green transition-all shadow-sm"
+                href="https://maps.app.goo.gl/rahBobaqaQLGoMqM9"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fas fa-location-arrow"></i> Ver no mapa
+              </a>
+              <a
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-wedding-green/40 text-dark-green text-xs uppercase tracking-wider font-bold rounded-lg hover:bg-wedding-green transition-all"
+                href="https://youtu.be/us5v-MYhLgQ?si=FtypJu8wQ4mWuDGn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fas fa-video"></i> Como chegar
+              </a>
+            </div>
+          </article>
+
+          <!-- Card Traje -->
+          <article
             data-aos="fade-up"
             data-aos-delay="300"
-            class="flex flex-col items-center text-center"
+            class="group bg-wedding-cream rounded-2xl p-6 sm:p-8 shadow-sm border border-dark-green/10 hover:shadow-md hover:border-light-brown/50 transition-all duration-300 flex flex-col items-center text-center"
           >
-            <img
-              src="{% static 'images/traje.jpg' %}"
-              class="object-cover w-60 h-60 mb-4 rounded-full"
-              alt="Detalhes"
-            />
-            <h3 class="text-dark-brown font-bold font-quicksand text-xl mb-2">
-              Traje
+            <div class="overflow-hidden rounded-full ring-4 ring-wedding-green/50 mb-6 group-hover:scale-105 transition-transform duration-500 w-52 h-52 sm:w-56 sm:h-56">
+              <img
+                src="{% static 'images/traje.jpg' %}"
+                class="object-cover w-full h-full"
+                alt="Detalhes Traje"
+              />
+            </div>
+            <div class="inline-flex items-center gap-2 mb-2 text-light-brown text-xs uppercase tracking-widest font-bold font-quicksand">
+              <i class="fas fa-user-tie"></i>
+              <span>Traje</span>
+            </div>
+            <h3 class="text-2xl font-serif-display text-dark-green mb-2">
+              Passeio Completo
             </h3>
-            <h4 class="text-dark-brown font-quicksand">
+            <h4 class="text-dark-brown font-quicksand text-lg font-semibold">
               Formal ou de Coquetel
             </h4>
-          </div>
+            <p class="text-dark-brown/70 font-quicksand text-sm mt-2">
+              Sugerimos sapatos confortáveis para aproveitar todo o evento ao ar livre.
+            </p>
+          </article>
         </div>
-        <div data-aos="zoom-in" class="flex flex-col items-center mt-8">
+
+        <!-- Salvar Data -->
+        <div data-aos="zoom-in" class="flex flex-col items-center mt-8 pt-6 border-t border-dark-green/10 max-w-xl mx-auto">
           <p
-            class="text-dark-brown/60 font-quicksand text-xs uppercase tracking-[0.2em] mb-4"
+            class="text-dark-brown/70 font-quicksand text-xs uppercase tracking-[0.25em] mb-4 font-bold"
           >
-            Salvar data
+            Adicionar ao seu calendário
           </p>
-          <div class="flex items-center gap-8">
+          <div class="flex items-center justify-center gap-4 sm:gap-8">
             <a
               href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Casamento+Rebeca+e+Vinicius&dates=20261122T100000/20261122T180000&details=Celebração+do+nosso+casamento!&location=Recanto+Januário+-+Sumaré/SP&ctz=America/Sao_Paulo"
               target="_blank"
-              class="flex items-center gap-2 text-dark-green hover:text-light-brown transition-colors duration-300 font-quicksand font-bold group"
+              class="flex items-center gap-2 text-dark-green hover:text-light-brown transition-colors duration-300 font-quicksand font-bold group text-[10px] sm:text-xs uppercase tracking-widest whitespace-nowrap"
             >
-              <i class="fab fa-google text-lg"></i>
+              <i class="fab fa-google text-sm sm:text-lg"></i>
               <span class="relative"
-                >Google
+                >Google Agenda
                 <span
-                  class="absolute left-0 bottom-0 w-0 h-0.5 bg-light-brown transition-all duration-300 group-hover:w-full"
+                  class="absolute left-0 -bottom-1 w-0 h-0.5 bg-light-brown transition-all duration-300 group-hover:w-full"
                 ></span>
               </span>
             </a>
@@ -325,13 +351,13 @@
             <a
               href="{% static 'events/wedding.ics' %}"
               download="save-the-date.ics"
-              class="flex items-center gap-2 text-dark-green hover:text-light-brown transition-colors duration-300 font-quicksand font-bold group"
+              class="flex items-center gap-2 text-dark-green hover:text-light-brown transition-colors duration-300 font-quicksand font-bold group text-[10px] sm:text-xs uppercase tracking-widest whitespace-nowrap"
             >
-              <i class="fab fa-apple text-lg"></i>
+              <i class="fab fa-apple text-sm sm:text-lg"></i>
               <span class="relative"
                 >Apple / Outlook
                 <span
-                  class="absolute left-0 bottom-0 w-0 h-0.5 bg-light-brown transition-all duration-300 group-hover:w-full"
+                  class="absolute left-0 -bottom-1 w-0 h-0.5 bg-light-brown transition-all duration-300 group-hover:w-full"
                 ></span>
               </span>
             </a>
@@ -339,6 +365,7 @@
         </div>
       </section>
 
+      <!-- RSVP SECTION -->
       <section
         id="rsvp"
         class="bg-wedding-green h-auto py-20 px-4 relative overflow-hidden"
@@ -346,6 +373,7 @@
         {% block content %} {% endblock content %}
       </section>
 
+      <!-- LISTA DE PRESENTES SECTION -->
       <section
         id="lista-de-presentes"
         class="bg-dark-green h-auto py-24 px-4 relative"
@@ -381,13 +409,14 @@
               target="_blank"
               rel="noopener noreferrer"
               href="https://www.querodecasamento.com.br/lista-de-casamento/rebeca_vinicius"
-              class="inline-block px-10 py-4 bg-light-brown hover:bg-wedding-cream hover:text-dark-green transition-all duration-300 text-dark-green font-bold font-quicksand rounded shadow-md uppercase tracking-widest text-sm md:text-base border border-light-brown"
+              class="inline-block px-10 py-4 bg-light-brown hover:bg-wedding-cream hover:text-dark-green transition-all duration-300 text-dark-green font-bold font-quicksand rounded-lg shadow-md uppercase tracking-widest text-sm md:text-base border border-light-brown"
             >
               Lista Virtual
             </a>
             <button
-              onclick="copyPixKey()"
-              class="inline-block px-10 py-4 bg-transparent border border-light-brown text-light-brown hover:bg-light-brown hover:text-dark-green transition-all duration-300 font-bold font-quicksand rounded shadow-md uppercase tracking-widest text-sm md:text-base"
+              id="btn-copy-pix"
+              type="button"
+              class="inline-block px-10 py-4 bg-transparent border border-light-brown text-light-brown hover:bg-light-brown hover:text-dark-green transition-all duration-300 font-bold font-quicksand rounded-lg shadow-md uppercase tracking-widest text-sm md:text-base cursor-pointer"
             >
               Chave Pix
             </button>
@@ -395,124 +424,41 @@
         </div>
       </section>
 
+      <!-- FOOTER -->
       <footer
-        class="bg-dark-green py-8 border-t border-wedding-cream/10 text-center"
+        class="bg-dark-green py-12 border-t border-wedding-cream/10 text-center"
       >
-        <p class="text-wedding-cream/40 font-quicksand text-sm">
-          © 2026 Rebeca & Vinicius. Com carinho.
-        </p>
+        <div class="max-w-4xl mx-auto px-4 flex flex-col items-center gap-6">
+          <div class="flex flex-wrap justify-center gap-6 text-xs uppercase tracking-widest text-wedding-cream/60 font-quicksand font-medium">
+            <a href="#inicio" class="hover:text-wedding-cream transition-colors">Início</a>
+            <a href="#sobre" class="hover:text-wedding-cream transition-colors">O Casamento</a>
+            <a href="#detalhes" class="hover:text-wedding-cream transition-colors">Detalhes</a>
+            <a href="#rsvp" class="hover:text-wedding-cream transition-colors">RSVP</a>
+            <a href="#lista-de-presentes" class="hover:text-wedding-cream transition-colors">Lista de Presentes</a>
+          </div>
+
+          <p class="text-wedding-cream/40 font-quicksand text-xs">
+            © 2026 Rebeca & Vinicius • Feito com o <i class="fas fa-heart text-light-brown text-[10px]"></i> para celebrar o nosso amor.
+          </p>
+        </div>
       </footer>
     </main>
 
+    <!-- Vendor Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <style>
-      .toast-container {
-        font-family: 'Quicksand', sans-serif;
-      }
-
-      .toast {
-        background-color: #1a4d3e;
-        color: #fef6f0;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(26, 77, 62, 0.3);
-        border-left: 4px solid #4a9d89;
-        padding: 1rem;
-        font-size: 14px;
-        font-weight: 500;
-      }
-
-      .toast.success {
-        background-color: #166534;
-        border-left-color: #22c55e;
-        color: #f0fdf4;
-      }
-
-      .toast.error {
-        background-color: #7f1d1d;
-        border-left-color: #ef4444;
-        color: #fef2f2;
-      }
-
-      .toast.warning {
-        background-color: #713f12;
-        border-left-color: #eab308;
-        color: #fffbeb;
-      }
-
-      .toast.info {
-        background-color: #1e3a8a;
-        border-left-color: #3b82f6;
-        color: #eff6ff;
-      }
-
-      .toast-message {
-        font-family: 'Quicksand', sans-serif;
-        font-weight: 500;
-      }
-
-      .toast-close-button {
-        color: inherit;
-        opacity: 0.8;
-        transition: opacity 0.2s;
-      }
-
-      .toast-close-button:hover {
-        opacity: 1;
-      }
-
-      .toast-progress {
-        background: linear-gradient(to right, #4a9d89, #6ab09f);
-        height: 3px;
-      }
-
-      .toast.success .toast-progress {
-        background: linear-gradient(to right, #22c55e, #4ade80);
-      }
-
-      .toast.error .toast-progress {
-        background: linear-gradient(to right, #dc2626, #ef4444);
-      }
-
-      .toast.warning .toast-progress {
-        background: linear-gradient(to right, #d97706, #f59e0b);
-      }
-
-      .toast.info .toast-progress {
-        background: linear-gradient(to right, #2563eb, #3b82f6);
-      }
-    </style>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-      AOS.init();
-      toastr.options = {
-        "closeButton": true,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": true,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "3000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-      };
-    </script>
-    <script>
-      window.WEDDING_DATE = "{{ WEDDING_DATE|escapejs }}";
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    
+    <!-- Application Scripts -->
     <script src="{% static 'js/toast.js' %}"></script>
-    <script src="{% static 'js/nav_toggle.js' %}"></script>
     <script src="{% static 'js/countdown.js' %}"></script>
     <script src="{% static 'js/pix_btn.js' %}"></script>
     <script src="{% static 'js/post_invitation.js' %}"></script>
+    
+    <script>
+      AOS.init();
+    </script>
   </body>
 </html>
