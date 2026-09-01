@@ -228,3 +228,70 @@ class RsvpDeadlineTest(TestCase):
         data = {'confirmacao': [str(self.convidado.id)]}
         response = self.client.post(url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
+
+
+class PermissionsPolicyTest(TestCase):
+    def test_permissions_policy_header_present_in_responses(self):
+        response = self.client.get(reverse('core:index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Permissions-Policy", response.headers)
+        header = response.headers["Permissions-Policy"]
+        self.assertIn("camera=()", header)
+        self.assertIn("microphone=()", header)
+        self.assertIn("geolocation=()", header)
+        self.assertIn("fullscreen=(self)", header)
+        self.assertIn("payment=()", header)
+        self.assertIn("usb=()", header)
+
+    @override_settings(PERMISSIONS_POLICY={"camera": [], "geolocation": []})
+    def test_permissions_policy_empty_list(self):
+        response = self.client.get(reverse('core:api_status'))
+        self.assertEqual(response.headers.get("Permissions-Policy"), "camera=(), geolocation=()")
+
+    @override_settings(PERMISSIONS_POLICY={"fullscreen": ["self"], "camera": "self"})
+    def test_permissions_policy_self(self):
+        response = self.client.get(reverse('core:api_status'))
+        self.assertEqual(response.headers.get("Permissions-Policy"), "fullscreen=(self), camera=(self)")
+
+    @override_settings(PERMISSIONS_POLICY={"fullscreen": ["*"], "camera": "*"})
+    def test_permissions_policy_wildcard(self):
+        response = self.client.get(reverse('core:api_status'))
+        self.assertEqual(response.headers.get("Permissions-Policy"), "fullscreen=*, camera=*")
+
+    @override_settings(PERMISSIONS_POLICY={"camera": ["self", "https://example.com"]})
+    def test_permissions_policy_origins(self):
+        response = self.client.get(reverse('core:api_status'))
+        self.assertEqual(response.headers.get("Permissions-Policy"), 'camera=(self "https://example.com")')
+
+    @override_settings(PERMISSIONS_POLICY="geolocation=(), camera=()")
+    def test_permissions_policy_raw_string(self):
+        response = self.client.get(reverse('core:api_status'))
+        self.assertEqual(response.headers.get("Permissions-Policy"), "geolocation=(), camera=()")
+
+    @override_settings(PERMISSIONS_POLICY=None)
+    def test_permissions_policy_none(self):
+        response = self.client.get(reverse('core:api_status'))
+        self.assertNotIn("Permissions-Policy", response.headers)
+
+    @override_settings(PERMISSIONS_POLICY={})
+    def test_permissions_policy_empty_dict(self):
+        response = self.client.get(reverse('core:api_status'))
+        self.assertNotIn("Permissions-Policy", response.headers)
+
+    def test_permissions_policy_preserves_existing_header(self):
+        from django.http import HttpResponse
+        from meu_casamento.middleware import PermissionsPolicyMiddleware
+
+        custom_header = "custom-feature=()"
+        def custom_view(request):
+            res = HttpResponse("OK")
+            res["Permissions-Policy"] = custom_header
+            return res
+
+        from django.test import RequestFactory
+        factory = RequestFactory()
+        request = factory.get('/')
+        middleware = PermissionsPolicyMiddleware(custom_view)
+        response = middleware(request)
+        self.assertEqual(response["Permissions-Policy"], custom_header)
+

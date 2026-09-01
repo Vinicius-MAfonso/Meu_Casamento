@@ -94,6 +94,7 @@ if DEBUG:
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'meu_casamento.middleware.PermissionsPolicyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -195,6 +196,26 @@ CACHES = get_cache_settings(RUNNING_TESTS, os.getenv("DJANGO_ENV"), os.getenv("C
 # -------------------------
 # Security settings
 # -------------------------
+
+PERMISSIONS_POLICY = {
+    "accelerometer": [],
+    "ambient-light-sensor": [],
+    "autoplay": [],
+    "camera": [],
+    "display-capture": [],
+    "document-domain": [],
+    "encrypted-media": [],
+    "fullscreen": ["self"],
+    "geolocation": [],
+    "gyroscope": [],
+    "interest-cohort": [],
+    "magnetometer": [],
+    "microphone": [],
+    "midi": [],
+    "payment": [],
+    "usb": [],
+    "xr-spatial-tracking": [],
+}
 
 if not DEBUG and not RUNNING_TESTS:
     SECURE_SSL_REDIRECT = True
