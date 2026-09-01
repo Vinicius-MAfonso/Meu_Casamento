@@ -95,6 +95,7 @@ if DEBUG:
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'meu_casamento.middleware.PermissionsPolicyMiddleware',
+    'meu_casamento.middleware.AdminLoginRateLimitMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -216,6 +217,11 @@ PERMISSIONS_POLICY = {
     "usb": [],
     "xr-spatial-tracking": [],
 }
+
+# Admin Login Rate Limiting (Brute-force protection)
+ADMIN_LOGIN_RATE_LIMIT_MAX_ATTEMPTS = int(os.getenv("ADMIN_LOGIN_MAX_ATTEMPTS", "5"))
+ADMIN_LOGIN_RATE_LIMIT_WINDOW = int(os.getenv("ADMIN_LOGIN_WINDOW_SECONDS", "300"))
+DJANGO_ADMIN_URL = os.getenv("DJANGO_ADMIN_URL", "admin/")
 
 if not DEBUG and not RUNNING_TESTS:
     SECURE_SSL_REDIRECT = True

@@ -295,3 +295,49 @@ class PermissionsPolicyTest(TestCase):
         response = middleware(request)
         self.assertEqual(response["Permissions-Policy"], custom_header)
 
+
+class AdminLoginRateLimitTest(TestCase):
+    def setUp(self):
+        cache.clear()
+
+    @override_settings(ADMIN_LOGIN_RATE_LIMIT_MAX_ATTEMPTS=3, ADMIN_LOGIN_RATE_LIMIT_WINDOW=60)
+    def test_admin_login_blocks_after_max_attempts(self):
+        login_url = reverse('admin:login')
+        payload = {'username': 'testadmin', 'password': 'wrongpassword'}
+
+        # First 3 attempts are processed (returning 200 with invalid login error)
+        for _ in range(3):
+            response = self.client.post(login_url, payload)
+            self.assertEqual(response.status_code, 200)
+
+        # 4th attempt is blocked with 429 Too Many Requests
+        response = self.client.post(login_url, payload)
+        self.assertEqual(response.status_code, 429)
+        self.assertIn("Muitas tentativas de login", response.content.decode())
+
+    def test_admin_login_get_not_rate_limited(self):
+        login_url = reverse('admin:login')
+        for _ in range(10):
+            response = self.client.get(login_url)
+            self.assertEqual(response.status_code, 200)
+
+    @override_settings(ADMIN_LOGIN_RATE_LIMIT_MAX_ATTEMPTS=2, ADMIN_LOGIN_RATE_LIMIT_WINDOW=60)
+    def test_admin_login_rate_limit_uses_x_forwarded_for(self):
+        login_url = reverse('admin:login')
+        headers = {'HTTP_X_FORWARDED_FOR': '198.51.100.25, 10.0.0.1'}
+        payload = {'username': 'attacker', 'password': 'badpassword'}
+
+        for _ in range(2):
+            response = self.client.post(login_url, payload, **headers)
+            self.assertEqual(response.status_code, 200)
+
+        # Blocked for this IP
+        response = self.client.post(login_url, payload, **headers)
+        self.assertEqual(response.status_code, 429)
+
+        # A different IP is not blocked
+        other_headers = {'HTTP_X_FORWARDED_FOR': '203.0.113.88'}
+        response = self.client.post(login_url, payload, **other_headers)
+        self.assertEqual(response.status_code, 200)
+
+
