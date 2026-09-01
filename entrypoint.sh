@@ -7,6 +7,9 @@ python manage.py tailwind build
 echo "Coletando arquivos estáticos..."
 python manage.py collectstatic --noinput
 
+echo "Criando tabela de cache (se não existir)..."
+python manage.py createcachetable
+
 echo "Aplicando migrações do banco de dados..."
 python manage.py migrate --noinput
 
