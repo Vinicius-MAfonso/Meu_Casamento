@@ -5,8 +5,14 @@ from django.utils import timezone
 from datetime import timedelta
 import json
 import re
+from unittest.mock import patch, MagicMock
+from django.contrib.admin.sites import AdminSite
+from django.test import RequestFactory
+from django.contrib.messages.storage.fallback import FallbackStorage
 from meu_casamento import settings as settings_module
 from .models import Grupo, Convidado
+from .admin import GrupoAdmin
+from .utils import shorten_url_tinyurl
 
 
 class GrupoModelTest(TestCase):
@@ -15,6 +21,47 @@ class GrupoModelTest(TestCase):
         self.assertEqual(grupo.nome, "Família Silva")
         self.assertFalse(grupo.status_confirmacao)
         self.assertIsNotNone(grupo.codigo_acesso)
+
+    def test_get_absolute_url(self):
+        grupo = Grupo.objects.create(nome="Família Silva")
+        expected = reverse("core:home", kwargs={"codigo_acesso": grupo.codigo_acesso})
+        self.assertEqual(grupo.get_absolute_url(), expected)
+
+    @override_settings(SITE_URL="https://meucasamento.example.com")
+    def test_full_url_uses_site_url(self):
+        grupo = Grupo.objects.create(nome="Família Silva")
+        expected = f"https://meucasamento.example.com/{grupo.codigo_acesso}/"
+        self.assertEqual(grupo.full_url, expected)
+
+
+class GrupoAdminTest(TestCase):
+    def setUp(self):
+        self.site = AdminSite()
+        self.admin = GrupoAdmin(Grupo, self.site)
+        self.grupo = Grupo.objects.create(nome="Família Silva")
+
+    @override_settings(SITE_URL="https://meucasamento.example.com")
+    def test_link_convite_renders_html_link(self):
+        link_html = self.admin.link_convite(self.grupo)
+        expected_url = f"https://meucasamento.example.com/{self.grupo.codigo_acesso}/"
+        self.assertIn(f'href="{expected_url}"', link_html)
+
+    def test_link_encurtado_renders_dash_when_empty_and_link_when_set(self):
+        self.assertEqual(self.admin.link_encurtado(self.grupo), "-")
+        self.grupo.encurtador_url = "https://tinyurl.com/xyz123"
+        self.assertIn('href="https://tinyurl.com/xyz123"', self.admin.link_encurtado(self.grupo))
+
+    @patch("core.admin.shorten_url_tinyurl")
+    def test_gerar_links_encurtados_action(self, mock_shorten):
+        mock_shorten.return_value = "https://tinyurl.com/testshort"
+        request = RequestFactory().get("/")
+        setattr(request, "session", {})
+        messages = FallbackStorage(request)
+        setattr(request, "_messages", messages)
+
+        self.admin.gerar_links_encurtados(request, Grupo.objects.filter(id=self.grupo.id))
+        self.grupo.refresh_from_db()
+        self.assertEqual(self.grupo.encurtador_url, "https://tinyurl.com/testshort")
 
 
 class ConvidadoModelTest(TestCase):

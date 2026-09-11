@@ -36,6 +36,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.rvwedding.com.br",
 ]
 
+SITE_URL = os.getenv("SITE_URL", "http://localhost:8000").rstrip("/")
+
 # -------------------------
 # Database configuration
 # -------------------------
