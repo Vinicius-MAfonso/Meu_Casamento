@@ -1,12 +1,7 @@
-import logging
-import urllib.parse
-import urllib.request
 from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.utils import timezone
-
-logger = logging.getLogger(__name__)
 
 
 def get_wedding_datetime():
@@ -25,13 +20,3 @@ def get_rsvp_deadline():
 
 def is_rsvp_closed():
     return timezone.now() >= get_rsvp_deadline()
-
-
-def shorten_url_tinyurl(url: str, timeout: int = 5) -> str:
-    api_url = f"https://tinyurl.com/api-create.php?url={urllib.parse.quote(url, safe='')}"
-    req = urllib.request.Request(
-        api_url,
-        headers={"User-Agent": "MeuCasamento/1.0"},
-    )
-    with urllib.request.urlopen(req, timeout=timeout) as response:
-        return response.read().decode("utf-8").strip()

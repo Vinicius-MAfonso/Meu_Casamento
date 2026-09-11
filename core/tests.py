@@ -10,9 +10,8 @@ from django.contrib.admin.sites import AdminSite
 from django.test import RequestFactory
 from django.contrib.messages.storage.fallback import FallbackStorage
 from meu_casamento import settings as settings_module
-from .models import Grupo, Convidado
+from .models import Grupo, Convidado, SHORT_CODE_CHARACTERS
 from .admin import GrupoAdmin
-from .utils import shorten_url_tinyurl
 
 
 class GrupoModelTest(TestCase):
@@ -21,6 +20,10 @@ class GrupoModelTest(TestCase):
         self.assertEqual(grupo.nome, "Família Silva")
         self.assertFalse(grupo.status_confirmacao)
         self.assertIsNotNone(grupo.codigo_acesso)
+        self.assertIsNotNone(grupo.codigo_curto)
+        self.assertEqual(len(grupo.codigo_curto), 6)
+        self.assertTrue(all(c in SHORT_CODE_CHARACTERS for c in grupo.codigo_curto))
+        self.assertEqual(grupo.encurtador_url, grupo.short_url)
 
     def test_get_absolute_url(self):
         grupo = Grupo.objects.create(nome="Família Silva")
@@ -33,6 +36,34 @@ class GrupoModelTest(TestCase):
         expected = f"https://meucasamento.example.com/{grupo.codigo_acesso}/"
         self.assertEqual(grupo.full_url, expected)
 
+    @override_settings(SITE_URL="https://rvwedding.com.br")
+    def test_get_short_url_uses_site_url(self):
+        grupo = Grupo.objects.create(nome="Família Silva")
+        expected = f"https://rvwedding.com.br/c/{grupo.codigo_curto}/"
+        self.assertEqual(grupo.get_short_url(), expected)
+
+    def test_short_codes_are_unique(self):
+        g1 = Grupo.objects.create(nome="Grupo 1")
+        g2 = Grupo.objects.create(nome="Grupo 2")
+        self.assertNotEqual(g1.codigo_curto, g2.codigo_curto)
+
+
+class ShortRedirectViewTest(TestCase):
+    def setUp(self):
+        self.grupo = Grupo.objects.create(nome="Família Silva")
+
+    def test_short_redirect_success(self):
+        url = reverse("core:short_redirect", kwargs={"codigo_curto": self.grupo.codigo_curto})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        expected_redirect = reverse("core:home", kwargs={"codigo_acesso": self.grupo.codigo_acesso})
+        self.assertRedirects(response, expected_redirect)
+
+    def test_short_redirect_404_for_unknown_code(self):
+        url = reverse("core:short_redirect", kwargs={"codigo_curto": "unknown"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
 
 class GrupoAdminTest(TestCase):
     def setUp(self):
@@ -40,28 +71,29 @@ class GrupoAdminTest(TestCase):
         self.admin = GrupoAdmin(Grupo, self.site)
         self.grupo = Grupo.objects.create(nome="Família Silva")
 
-    @override_settings(SITE_URL="https://meucasamento.example.com")
-    def test_link_convite_renders_html_link(self):
-        link_html = self.admin.link_convite(self.grupo)
-        expected_url = f"https://meucasamento.example.com/{self.grupo.codigo_acesso}/"
+    @override_settings(SITE_URL="https://rvwedding.com.br")
+    def test_link_encurtado_renders_html_link(self):
+        link_html = self.admin.link_encurtado(self.grupo)
+        expected_url = f"https://rvwedding.com.br/c/{self.grupo.codigo_curto}/"
         self.assertIn(f'href="{expected_url}"', link_html)
 
-    def test_link_encurtado_renders_dash_when_empty_and_link_when_set(self):
-        self.assertEqual(self.admin.link_encurtado(self.grupo), "-")
-        self.grupo.encurtador_url = "https://tinyurl.com/xyz123"
-        self.assertIn('href="https://tinyurl.com/xyz123"', self.admin.link_encurtado(self.grupo))
+    @override_settings(SITE_URL="https://rvwedding.com.br")
+    def test_link_convite_renders_html_link(self):
+        link_html = self.admin.link_convite(self.grupo)
+        expected_url = f"https://rvwedding.com.br/{self.grupo.codigo_acesso}/"
+        self.assertIn(f'href="{expected_url}"', link_html)
 
-    @patch("core.admin.shorten_url_tinyurl")
-    def test_gerar_links_encurtados_action(self, mock_shorten):
-        mock_shorten.return_value = "https://tinyurl.com/testshort"
+    def test_regenerar_codigos_curtos_action(self):
+        old_code = self.grupo.codigo_curto
         request = RequestFactory().get("/")
         setattr(request, "session", {})
         messages = FallbackStorage(request)
         setattr(request, "_messages", messages)
 
-        self.admin.gerar_links_encurtados(request, Grupo.objects.filter(id=self.grupo.id))
+        self.admin.regenerar_codigos_curtos(request, Grupo.objects.filter(id=self.grupo.id))
         self.grupo.refresh_from_db()
-        self.assertEqual(self.grupo.encurtador_url, "https://tinyurl.com/testshort")
+        self.assertNotEqual(self.grupo.codigo_curto, old_code)
+        self.assertEqual(len(self.grupo.codigo_curto), 6)
 
 
 class ConvidadoModelTest(TestCase):
