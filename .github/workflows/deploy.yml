@@ -67,6 +67,7 @@ jobs:
             --region ${{ env.REGION }} \
             --project ${{ env.PROJECT_ID }} \
             --allow-unauthenticated \
+            --update-env-vars "SITE_URL=${{ vars.SITE_URL }}" \
             --quiet
 
 

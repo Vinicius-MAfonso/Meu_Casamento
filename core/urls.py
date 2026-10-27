@@ -5,6 +5,7 @@ app_name = "core"
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path("c/<str:codigo_curto>/", views.short_redirect, name="short_redirect"),
     path("<uuid:codigo_acesso>/", views.home, name="home"),
     path(
         "api/confirmar/<uuid:codigo_acesso>/", views.api_confirmar_presenca, name="api_confirmar"

@@ -1,6 +1,6 @@
 import json
 import logging
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST, require_safe
 from django.db import transaction
@@ -11,6 +11,11 @@ import time
 
 
 logger = logging.getLogger(__name__)
+
+
+def short_redirect(request, codigo_curto):
+    grupo = get_object_or_404(Grupo, codigo_curto=codigo_curto)
+    return redirect("core:home", codigo_acesso=grupo.codigo_acesso)
 
 
 def home(request, codigo_acesso):
