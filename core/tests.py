@@ -14,6 +14,11 @@ from .models import Grupo, Convidado, SHORT_CODE_CHARACTERS
 from .admin import GrupoAdmin
 
 
+def _wedding_date_in(days):
+    """A WEDDING_DATE string `days` from now, formatted the same way settings.py uses."""
+    return timezone.localtime(timezone.now() + timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%S")
+
+
 class GrupoModelTest(TestCase):
     def test_grupo_creation(self):
         grupo = Grupo.objects.create(nome="Família Silva")
@@ -138,8 +143,12 @@ class HomeViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
+# Pin the wedding date well in the future so these tests don't depend on the
+# real calendar date (otherwise they start failing once the RSVP deadline passes).
+@override_settings(WEDDING_DATE=_wedding_date_in(60))
 class APIConfirmarPresencaTest(TestCase):
     def setUp(self):
+        cache.clear()
         self.grupo = Grupo.objects.create(nome="Família Silva")
         self.convidado1 = Convidado.objects.create(
             nome="João Silva", grupo=self.grupo
@@ -236,11 +245,6 @@ class IndexAndStatusViewTest(TestCase):
         response = self.client.get(reverse('core:api_status'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"status": "ok"})
-
-
-def _wedding_date_in(days):
-    """A WEDDING_DATE string `days` from now, formatted the same way settings.py uses."""
-    return timezone.localtime(timezone.now() + timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%S")
 
 
 def _is_container_hidden(html, container_id):
